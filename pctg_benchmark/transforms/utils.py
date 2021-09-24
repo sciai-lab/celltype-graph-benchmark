@@ -28,7 +28,7 @@ def class_from_func(func):
               f'Original docstring:\n' \
               f'{func.__doc__}'
 
-    produced_class = type(func.__doc__, (object,), {
+    produced_class = type(func.__name__, (object,), {
         "_fun": staticmethod(func),
         "__init__": _constructor,
         "__call__": _caller,
@@ -36,3 +36,19 @@ def class_from_func(func):
         "__doc__": new_doc,
     })
     return produced_class
+
+
+def to_camel_case(name):
+    new_name = []
+    i = 0
+    while i < len(name):
+        _x = name[i]
+        if i == 0:
+            new_name.append(_x.capitalize())
+        elif _x == '_':
+            new_name.append(name[i+1].capitalize())
+            i += 1
+        else:
+            new_name.append(_x)
+        i += 1
+    return ''.join(new_name)
