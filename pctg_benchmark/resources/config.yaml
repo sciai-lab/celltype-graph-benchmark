@@ -1,5 +1,4 @@
 
-
 dataset:
   node_features:
     - name: "feat_name"
