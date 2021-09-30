@@ -1,0 +1,53 @@
+
+dataset:
+  node_features:
+    # grs dependent
+    - name: com_grs
+      pre_transform:
+        - name: ComputeZscore
+    # purely graph
+    - name: degree_centrality
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+    - name: rw_centrality
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+    - name: hops_to_bg
+      pre_transform:
+        - name: ComputeToOnehot
+          max_channel: 5
+          extreme: [0, 1]
+    # grs independent
+    - name: volume_um
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+    - name: length_axis1_grs
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+    - name: length_axis2_grs
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+    - name: length_axis3_grs
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+    - name: pca_explained_variance_grs
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+
+  edges_features:
+    - name: "feat_name"
+      pre_transform:
+        - name: "transform_name"
+          q: (0, 1)
+
+  graph:
+    graph_transform:
+      - name: "transform_name"
+        q: (0, 1)

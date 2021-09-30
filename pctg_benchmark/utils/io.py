@@ -25,10 +25,10 @@ def open_full_stack(path, keys=None):
     return stacks
 
 
-def _update(template_dict, up_dict):
+def _update_dict(template_dict, up_dict):
     for key, value in up_dict.items():
         if isinstance(up_dict[key], dict) and key in template_dict:
-            template_dict[key] = _update(template_dict[key], up_dict[key])
+            template_dict[key] = _update_dict(template_dict[key], up_dict[key])
         else:
             template_dict[key] = up_dict[key]
 
@@ -57,7 +57,7 @@ def load_yaml(config_path):
         template_config = config['_internal_variables']['template']
         del template_config['_internal_variables']
         del config['_internal_variables']
-        config = _update(template_config, config)
+        config = _update_dict(template_config, config)
     else:
         if '_internal_variables' in config:
             del config['_internal_variables']

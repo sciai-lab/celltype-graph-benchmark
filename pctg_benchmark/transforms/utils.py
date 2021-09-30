@@ -2,11 +2,13 @@ import inspect
 
 
 def _constructor(self, **kwargs):
+    """wrap the default parameters"""
     self._kwargs = kwargs
 
 
 def _caller(self, x):
-    return self._fun(x)
+    """wrap the function call"""
+    return self._fun(x, **self._kwargs)
 
 
 def _parse_signature(fun):
