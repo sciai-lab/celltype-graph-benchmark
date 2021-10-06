@@ -1,0 +1,2 @@
+include pctg_benchmark/resources/list_data.csv
+include pctg_benchmark/resources/loader_base_config.yaml
