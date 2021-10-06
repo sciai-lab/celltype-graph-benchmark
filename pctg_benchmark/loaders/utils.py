@@ -8,11 +8,12 @@ def collect_features(features_dict, list_configs, as_array=True):
     list_feat = []
     for item in list_configs:
         feat = features_dict[item['name']]
-        transform = setup_transforms(item['pre_transform'])
-        feat = transform(feat)
+        if 'pre_transform' in item:
+            transform = setup_transforms(item['pre_transform'])
+            feat = transform(feat)
         list_feat.append(feat)
 
-    list_feat = [feat if feat.ndim == 2 else feat[:, None] for feat in list_feat]
+    list_feat = [feat[:, None] if feat.ndim == 1 else feat for feat in list_feat]
     array_feat = np.concatenate(list_feat, axis=1) if as_array else list_feat
     return array_feat
 
@@ -50,12 +51,11 @@ def remove_node_full(nodes_ids, edges_ids,
     return nodes_ids, edges_ids, nodes_label, edges_label, nodes_features, edges_features
 
 
-def graph_preprocessing(nodes_ids, edges_ids,
-                        nodes_label, edges_label,
-                        nodes_features, edges_features):
+def graph_preprocessing(nodes_ids, edges_ids, edges_label, edges_features):
     edges_features = filter_label_from_edges_feature(edges_ids, edges_features)
     edges_label = filter_label_from_edges_feature(edges_ids, edges_label)
     edges_ids = filter_label_from_edges_ids(edges_ids)
 
     nodes_ids, edges_ids = rectify_graph(nodes_ids, edges_ids)
-    return nodes_ids, edges_ids, nodes_label, edges_label, nodes_features, edges_features
+    return nodes_ids, edges_ids, edges_label, edges_features
+

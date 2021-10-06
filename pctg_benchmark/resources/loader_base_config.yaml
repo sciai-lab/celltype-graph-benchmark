@@ -1,5 +1,13 @@
 
 dataset:
+  nodes_ids_key: cell_ids
+  edges_ids_key: edges_ids
+  nodes_labels_key: cell_labels
+  edges_labels_key: edges_labels
+  node_features_key: cell_features
+  edges_features_key: edges_features
+  pos_features_key: cell_samples
+
   node_features:
     # grs dependent
     - name: com_grs
@@ -42,12 +50,15 @@ dataset:
         - name: ComputeZscore
 
   edges_features:
-    - name: "feat_name"
+    - name: com_distance_um
       pre_transform:
-        - name: "transform_name"
-          q: (0, 1)
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
 
-  graph:
-    graph_transform:
+  pos_features:
+    - name: hollow_fps_samples_grs
+
+  graph_data:
+    pre_transform:
       - name: "transform_name"
-        q: (0, 1)
+
