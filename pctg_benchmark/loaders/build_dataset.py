@@ -8,7 +8,8 @@ import numpy as np
 from torch_geometric.data import Data
 
 from pctg_benchmark import pctg_basic_loader_config, default_dataset_file_list
-from pctg_benchmark.loaders.utils import collect_features, graph_preprocessing
+from pctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
+from pctg_benchmark.transforms.basics import compute_to_tensor
 from pctg_benchmark.utils.io import open_full_stack, load_yaml
 
 
@@ -73,17 +74,27 @@ def default_build_torch_geometric_data(data_file_path: str, config: dict = None,
                                            stack.get(key_config.edges_labels_key),
                                            edges_features)
 
+    # nodes to ignore should be implemented as a node mask
+    node_labels, nodes_to_ignore = map_nodes_labels(stack.get(key_config.nodes_labels_key))
+    if len(nodes_to_ignore) > 0:
+        raise NotImplementedError("Masked nodes are not implemented")
+
+    node_ids = compute_to_tensor(node_ids, type='int')
+    node_labels = compute_to_tensor(node_labels, type='int')
+    edges_ids = compute_to_tensor(edges_ids, type='int').T
+    edges_labels = compute_to_tensor(edges_labels, type='int')
+
     # build torch_geometric Data obj
     graph_data = Data(x=node_features,
-                      num_nodes=node_features.shape[0],
-                      y=stack.get(key_config.nodes_labels_key),
+                      y=node_labels,
                       pos=pos_features,
                       file_path=data_file_path,
                       metadata=meta,
-                      nodes_ids=node_ids,
+                      node_ids=node_ids,
                       edge_attr=edges_features,
                       edge_y=edges_labels,
-                      edge_index=edges_ids)
+                      edge_index=edges_ids,
+                      num_nodes=node_features.shape[0])
     return graph_data
 
 

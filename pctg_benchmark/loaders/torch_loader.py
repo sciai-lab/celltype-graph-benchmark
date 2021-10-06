@@ -7,14 +7,15 @@ from pctg_benchmark.loaders.build_dataset import build_cv_splits, default_build_
 
 class PCTG(InMemoryDataset):
     def __init__(self, root,
-                 split=0,
-                 phase='test',
                  transform=None,
                  pre_transform=None,
-                 raw_transform_config=None,
-                 grs=('es_pca_grs',),
-                 number_splits=5,
-                 file_list_path: str = None):
+                 split: int = 0,
+                 phase: str = 'test',
+                 raw_transform_config: dict = None,
+                 grs: tuple[str] = ('es_pca_grs',),
+                 number_splits: int = 5,
+                 force_process: bool = False,
+                 file_list_path: str = None) -> None:
 
         raw_data_paths = [os.path.join(root, 'raw', _grs) for _grs in grs]
         self.name_grs = '_'.join([_grs for _grs in grs])
@@ -29,6 +30,8 @@ class PCTG(InMemoryDataset):
         self.raw_transform_config = raw_transform_config
 
         super().__init__(root, transform, pre_transform)
+        if force_process:
+            self.process()
         self.data, self.slices = torch.load(self.processed_paths[0])
 
     @property

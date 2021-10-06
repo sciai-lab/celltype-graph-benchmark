@@ -13,47 +13,156 @@ dataset:
     - name: com_grs
       pre_transform:
         - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_axis1_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_axis2_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_axis3_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_axis3_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: pca_axis1_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: pca_axis3_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: pca_axis3_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
     # purely graph
     - name: degree_centrality
       pre_transform:
         - name: ComputeClipQuantile
         - name: ComputeZscore
+        - name: ComputeToTensor
     - name: rw_centrality
       pre_transform:
         - name: ComputeClipQuantile
         - name: ComputeZscore
+        - name: ComputeToTensor
+
     - name: hops_to_bg
       pre_transform:
         - name: ComputeToOnehot
           max_channel: 5
           extreme: [0, 1]
+        - name: ComputeToTensor
     # grs independent
     - name: volume_um
       pre_transform:
         - name: ComputeClipQuantile
         - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: surface_um
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    # -- length features
     - name: length_axis1_grs
       pre_transform:
         - name: ComputeClipQuantile
         - name: ComputeZscore
+        - name: ComputeToTensor
     - name: length_axis2_grs
       pre_transform:
         - name: ComputeClipQuantile
         - name: ComputeZscore
+        - name: ComputeToTensor
     - name: length_axis3_grs
       pre_transform:
         - name: ComputeClipQuantile
         - name: ComputeZscore
-    - name: pca_explained_variance_grs
+        - name: ComputeToTensor
+    # -- dot features
+    - name: lrs_axis12_dot_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_axis2_angle_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_proj_axis1_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_proj_axis2_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_proj_axis3_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: pca_proj_axis1_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: pca_proj_axis2_grs
       pre_transform:
         - name: ComputeClipQuantile
         - name: ComputeZscore
-
+        - name: ComputeToTensor
+    - name: pca_proj_axis3_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    # pca features
+    - name: pca_explained_variance_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    # not invariant but only because of permutations
+    - name: proj_length_unit_sphere
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+        - name: ComputeToTensor
   edges_features:
+    - name: surface_um
+      pre_transform:
+        - name: ComputeClipQuantile
+        - name: ComputeZscore
+        - name: ComputeToTensor
     - name: com_distance_um
       pre_transform:
         - name: ComputeClipQuantile
         - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: com_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_dot_axis1_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_dot_axis2_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_dot_axis3_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
+    - name: lrs_proj_grs
+      pre_transform:
+        - name: ComputeZscore
+        - name: ComputeToTensor
 
   pos_features:
     - name: hollow_fps_samples_grs

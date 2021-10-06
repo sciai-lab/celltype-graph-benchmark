@@ -1,5 +1,6 @@
 import numpy as np
 from typing import Optional
+import torch
 
 
 def compute_to_onehot(feat: np.ndarray,
@@ -22,3 +23,17 @@ def compute_to_onehot(feat: np.ndarray,
 
     feat_onehot[range(feat.shape[0]), feat] = extreme[1]
     return feat_onehot
+
+
+def compute_to_tensor(feat: np.ndarray,
+                      type: Optional[str] = 'float') -> torch.tensor:
+    if type == 'int':
+        feat = feat.astype('int64')
+        tensor_feat = torch.from_numpy(feat)
+        tensor_feat = tensor_feat.long()
+    elif type == 'float':
+        tensor_feat = torch.from_numpy(feat)
+        tensor_feat = tensor_feat.float()
+    else:
+        raise NotImplementedError
+    return tensor_feat
