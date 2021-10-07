@@ -1,43 +1,40 @@
 import os.path
 
+from abc import ABC, abstractmethod
 import torch
 from torch_geometric.data import InMemoryDataset, download_url
-from pctg_benchmark.loaders.build_dataset import build_cv_splits, default_build_torch_geometric_data
+from pctg_benchmark.loaders.build_dataset import default_build_torch_geometric_data
+from pctg_benchmark.loaders.build_dataset import build_cv_splits, build_std_splits
 
 
-class PCTG(InMemoryDataset):
+class PCTG(InMemoryDataset, ABC):
+
     def __init__(self, root,
+                 raw_file_metas: list,
+                 processed_dir: str,
                  transform=None,
                  pre_transform=None,
-                 split: int = 0,
-                 phase: str = 'test',
                  raw_transform_config: dict = None,
-                 grs: tuple[str] = ('es_pca_grs',),
-                 number_splits: int = 5,
-                 force_process: bool = False,
-                 file_list_path: str = None) -> None:
+                 force_process: bool = False) -> None:
 
-        raw_data_paths = [os.path.join(root, 'raw', _grs) for _grs in grs]
-        self.name_grs = '_'.join([_grs for _grs in grs])
-
-        self.splits = build_cv_splits(raw_data_paths,
-                                      file_list_path=file_list_path,
-                                      number_splits=number_splits,
-                                      )
-        self.split, self.phase = split, phase
-        self.raw_file_metas = self.splits[split][phase]
-        self._raw_file_names = [meta['path'] for meta in self.raw_file_metas]
-        self.raw_transform_config = raw_transform_config
+        self.raw_file_metas = raw_file_metas
+        self._raw_file_names = [meta['path'] for meta in raw_file_metas]
+        self._processed_dir = processed_dir
+        os.makedirs(processed_dir, exist_ok=True)
 
         super().__init__(root, transform, pre_transform)
+        self.raw_transform_config = raw_transform_config
         if force_process:
             self.process()
         self.data, self.slices = torch.load(self.processed_paths[0])
 
+    @abstractmethod
+    def get_raw_file_metas(self, *args):
+        pass
+
     @property
     def processed_dir(self) -> str:
-        return os.path.join(self.root,
-                            f'processed_{self.name_grs}_{self.phase}_split{self.split}')
+        return self._processed_dir
 
     @property
     def raw_file_names(self):
@@ -73,3 +70,72 @@ class PCTG(InMemoryDataset):
 
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
+
+
+class PCTGCrossValidationSplit(PCTG):
+    def __init__(self, root,
+                 transform=None,
+                 pre_transform=None,
+                 split: int = 0,
+                 phase: str = 'test',
+                 raw_transform_config: dict = None,
+                 grs: tuple[str] = ('es_pca_grs',),
+                 number_splits: int = 5,
+                 force_process: bool = False,
+                 file_list_path: str = None) -> None:
+
+        name_grs = '_'.join([_grs for _grs in grs])
+        processed_dir = os.path.join(root, f'processed_{name_grs}_{phase}_split{split}')
+        raw_file_metas = self.get_raw_file_metas(root, split, phase, grs, file_list_path, number_splits)
+        super().__init__(root=root,
+                         raw_file_metas=raw_file_metas,
+                         processed_dir=processed_dir,
+                         transform=transform,
+                         pre_transform=pre_transform,
+                         raw_transform_config=raw_transform_config,
+                         force_process=force_process)
+
+    @staticmethod
+    def get_raw_file_metas(root, split, phase, grs, file_list_path, number_splits):
+        raw_data_paths = [os.path.join(root, 'raw', _grs) for _grs in grs]
+        splits = build_cv_splits(raw_data_paths,
+                                 file_list_path=file_list_path,
+                                 number_splits=number_splits)
+        raw_file_metas = splits[split][phase]
+        return raw_file_metas
+
+
+class PCTGSimpleSplit(PCTG):
+    def __init__(self, root,
+                 transform=None,
+                 pre_transform=None,
+                 ratio: tuple = (0.6, 0.1, 0.3),
+                 seed: int = 0,
+                 phase: str = 'test',
+                 raw_transform_config: dict = None,
+                 grs: tuple[str] = ('es_pca_grs',),
+                 force_process: bool = False,
+                 file_list_path: str = None) -> None:
+
+        name_grs = '_'.join([_grs for _grs in grs])
+        ratio_name = '_'.join([str(_r).replace('0.', '') for _r in ratio])
+
+        processed_dir = os.path.join(root, f'processed_{name_grs}_{ratio_name}_{phase}_seeds{seed}')
+        raw_file_metas = self.get_raw_file_metas(root, ratio, seed, phase, grs, file_list_path)
+        super().__init__(root=root,
+                         raw_file_metas=raw_file_metas,
+                         processed_dir=processed_dir,
+                         transform=transform,
+                         pre_transform=pre_transform,
+                         raw_transform_config=raw_transform_config,
+                         force_process=force_process)
+
+    @staticmethod
+    def get_raw_file_metas(root, ratio, seed, phase, grs, file_list_path):
+        raw_data_paths = [os.path.join(root, 'raw', _grs) for _grs in grs]
+        splits = build_std_splits(raw_data_paths,
+                                  ratio,
+                                  seed=seed,
+                                  file_list_path=file_list_path)
+        raw_file_metas = splits[phase]
+        return raw_file_metas

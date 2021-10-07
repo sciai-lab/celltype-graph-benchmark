@@ -148,6 +148,15 @@ def sort_files(source_root: Union[str, list[str]],
     return dataset_full
 
 
+def append_stack_ids(split, stage_dict):
+    split_list = []
+    for _stack_idx in split:
+        list_stack_idx_mul = stage_dict[_stack_idx]
+        for stack_ids in list_stack_idx_mul:
+            split_list.append(stack_ids)
+    return split_list
+
+
 def build_cv_splits(source_root: str,
                     file_list_path: str = None,
                     number_splits: int = 5) -> dict:
@@ -169,16 +178,30 @@ def build_cv_splits(source_root: str,
             for _split in stage_split:
                 train_split += _split.tolist()
 
-            for _stack_idx in test_split:
-                list_stack_idx_mul = stage_dict[_stack_idx]
-                for stack_ids in list_stack_idx_mul:
-                    splits[i]['test'].append(stack_ids)
+            splits[i]['train'] += append_stack_ids(train_split, stage_dict)
+            splits[i]['test'] += append_stack_ids(test_split, stage_dict)
+    return splits
 
-            for _stack_idx in train_split:
-                list_stack_idx_mul = stage_dict[_stack_idx]
-                for stack_ids in list_stack_idx_mul:
 
-                    splits[i]['train'].append(stack_ids)
+def build_std_splits(source_root: str,
+                     splits_ratios=(0.6, 0.1, 0.3),
+                     file_list_path: str = None,
+                     seed=0) -> dict:
+    assert np.allclose(np.sum(splits_ratios), 1)
+    dataset_full = sort_files(source_root, file_list_path)
+
+    splits = {'train': [], 'val': [], 'test': []}
+    for stage, stage_dict in dataset_full.items():
+        stage_list = list(stage_dict.keys())
+        np.random.seed(seed)
+        np.random.shuffle(stage_list)
+        _splits_ratios = [np.ceil(ratio * len(stage_list)) for ratio in splits_ratios]
+        _splits_ratios = np.cumsum(_splits_ratios)[:-1].astype('int64')
+        train_split, val_split, test_split = np.split(stage_list, _splits_ratios)
+
+        splits['train'] += append_stack_ids(train_split, stage_dict)
+        splits['val'] += append_stack_ids(val_split, stage_dict)
+        splits['test'] += append_stack_ids(test_split, stage_dict)
     return splits
 
 
