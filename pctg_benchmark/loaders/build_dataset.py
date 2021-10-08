@@ -35,7 +35,9 @@ class ConfigKeyChain:
         self.graph_data_config = self.config.get('graph_data')
 
 
-def default_build_torch_geometric_data(data_file_path: str, config: dict = None, meta: dict = None) -> Data:
+def default_build_torch_geometric_data(data_file_path: str,
+                                       config: dict = None,
+                                       meta: dict = None) -> Data:
 
     if config is None:
         config = load_yaml(pctg_basic_loader_config)
@@ -94,6 +96,8 @@ def default_build_torch_geometric_data(data_file_path: str, config: dict = None,
                       edge_attr=edges_features,
                       edge_y=edges_labels,
                       edge_index=edges_ids,
+                      in_edges_attr=edges_features.shape[1],
+                      in_features=node_features.shape[1],
                       num_nodes=node_features.shape[0])
     return graph_data
 
@@ -159,14 +163,15 @@ def append_stack_ids(split, stage_dict):
 
 def build_cv_splits(source_root: str,
                     file_list_path: str = None,
-                    number_splits: int = 5) -> dict:
+                    number_splits: int = 5,
+                    seed: int = 0) -> dict:
 
     dataset_full = sort_files(source_root, file_list_path)
 
     splits = {i: {'test': [], 'train': []} for i in range(number_splits)}
     for stage, stage_dict in dataset_full.items():
         stage_list = list(stage_dict.keys())
-        np.random.seed(0)
+        np.random.seed(seed)
         np.random.shuffle(stage_list)
 
         for i in range(number_splits):
@@ -186,7 +191,7 @@ def build_cv_splits(source_root: str,
 def build_std_splits(source_root: str,
                      splits_ratios=(0.6, 0.1, 0.3),
                      file_list_path: str = None,
-                     seed=0) -> dict:
+                     seed: int = 0) -> dict:
     assert np.allclose(np.sum(splits_ratios), 1)
     dataset_full = sort_files(source_root, file_list_path)
 

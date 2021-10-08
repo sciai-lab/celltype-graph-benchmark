@@ -20,6 +20,8 @@ class PCTG(InMemoryDataset, ABC):
         self.raw_file_metas = raw_file_metas
         self._raw_file_names = [meta['path'] for meta in raw_file_metas]
         self._processed_dir = processed_dir
+        self.in_edges_attr: int = None
+        self.in_features: int = None
         os.makedirs(processed_dir, exist_ok=True)
 
         super().__init__(root, transform, pre_transform)
@@ -61,6 +63,8 @@ class PCTG(InMemoryDataset, ABC):
 
     def process(self):
         data_list = self.build_data_list()
+        self.in_edges_attr = data_list[0].in_edges_attr,
+        self.in_features = data_list[0].in_features,
 
         if self.pre_filter is not None:
             data_list = [data for data in data_list if self.pre_filter(data)]
