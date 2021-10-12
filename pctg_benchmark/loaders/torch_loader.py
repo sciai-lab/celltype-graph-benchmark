@@ -1,5 +1,5 @@
 import os.path
-
+from typing import Tuple
 from abc import ABC, abstractmethod
 import torch
 from torch_geometric.data import InMemoryDataset, download_url
@@ -94,7 +94,7 @@ class PCTGCrossValidationSplit(PCTG):
                  split: int = 0,
                  phase: str = 'test',
                  raw_transform_config: dict = None,
-                 grs: tuple[str] = ('es_pca_grs',),
+                 grs: Tuple[str] = ('es_pca_grs',),
                  number_splits: int = 5,
                  force_process: bool = False,
                  file_list_path: str = None) -> None:
@@ -128,7 +128,7 @@ class PCTGSimpleSplit(PCTG):
                  seed: int = 0,
                  phase: str = 'test',
                  raw_transform_config: dict = None,
-                 grs: tuple[str] = ('es_pca_grs',),
+                 grs: Tuple[str] = ('es_pca_grs',),
                  force_process: bool = False,
                  file_list_path: str = None) -> None:
 

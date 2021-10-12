@@ -5,6 +5,7 @@ from pctg_benchmark import gt_mapping
 from pctg_benchmark.transforms.transforms import setup_transforms
 from pctg_benchmark.transforms.graph import filter_label_from_edges_feature, filter_label_from_edges_ids
 from pctg_benchmark.transforms.graph import rectify_graph, remove_edges, remove_node
+from typing import Tuple
 
 
 def concatenate_features(list_feat):
@@ -39,7 +40,7 @@ def collect_features(features_dict, list_configs):
 def remove_edge_full(edges_ids,
                      edges_label,
                      edges_features,
-                     ids_to_remove: tuple[tuple]):
+                     ids_to_remove: Tuple[tuple]):
     for id_to_rm in ids_to_remove:
         edges_features = remove_edges(edges_ids, edges_features, id_to_rm)
         edges_label = remove_edges(edges_ids, edges_label, id_to_rm)
@@ -50,7 +51,7 @@ def remove_edge_full(edges_ids,
 def remove_node_full(nodes_ids, edges_ids,
                      nodes_label, edges_label,
                      nodes_features, edges_features,
-                     ids_to_remove: tuple[int]):
+                     ids_to_remove: Tuple[int]):
 
     for offset, id_to_rm in enumerate(ids_to_remove):
         original_id_to_rm = id_to_rm - offset

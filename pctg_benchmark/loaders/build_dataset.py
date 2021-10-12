@@ -2,7 +2,7 @@ import csv
 import glob
 import os.path
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List, Tuple
 
 import numpy as np
 from torch_geometric.data import Data
@@ -81,10 +81,10 @@ def default_build_torch_geometric_data(data_file_path: str,
     if len(nodes_to_ignore) > 0:
         raise NotImplementedError("Masked nodes are not implemented")
 
-    node_ids = compute_to_tensor(node_ids, type='int')
-    node_labels = compute_to_tensor(node_labels, type='int')
-    edges_ids = compute_to_tensor(edges_ids, type='int').T
-    edges_labels = compute_to_tensor(edges_labels, type='int')
+    node_ids = compute_to_tensor(node_ids, data_type='int')
+    node_labels = compute_to_tensor(node_labels, data_type='int')
+    edges_ids = compute_to_tensor(edges_ids, data_type='int').T
+    edges_labels = compute_to_tensor(edges_labels, data_type='int')
 
     # build torch_geometric Data obj
     graph_data = Data(x=node_features,
@@ -114,7 +114,7 @@ def sort_files_by_stage(path):
     return sorted_dataset
 
 
-def sort_files(source_root: Union[str, list[str]],
+def sort_files(source_root: Union[str, List[str]],
                file_list_path: str = None):
     file_list_path = default_dataset_file_list if file_list_path is None else file_list_path
     dataset_config_sorted = sort_files_by_stage(file_list_path)
