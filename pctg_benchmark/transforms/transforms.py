@@ -3,11 +3,12 @@ from dataclasses import dataclass
 import importlib
 import copy
 from torch_geometric.transforms import Compose
+from typing import List
 
 
 @dataclass
 class TransformFactory:
-    transform_modules: list[str]
+    transform_modules: List[str]
 
     def __post_init__(self):
         for module_name in self.transform_modules:
@@ -20,15 +21,14 @@ class TransformFactory:
 
 all_transforms = TransformFactory(['pctg_benchmark.transforms.basics',
                                    'pctg_benchmark.transforms.norms',
-                                   'pctg_benchmark.transforms.sanity_check']
-                                  )
+                                   'pctg_benchmark.transforms.sanity_check'])
 
 
 def setup_transforms(transforms_list):
     transforms = []
     for feat_config in transforms_list:
-        feat_config = copy.copy(feat_config)
-        name = feat_config['name']
+        _feat_config = copy.copy(feat_config)
+        name = _feat_config['name']
         if isinstance(name, str) and hasattr(all_transforms, name):
             transform_class = all_transforms.__getattribute__(name)
 
@@ -38,9 +38,9 @@ def setup_transforms(transforms_list):
         else:
             raise NotImplementedError
 
-        feat_config.pop('name')
+        _feat_config.pop('name')
 
-        transform_instance = transform_class(**feat_config)
+        transform_instance = transform_class(**_feat_config)
         transforms.append(transform_instance)
     return Compose(transforms)
 

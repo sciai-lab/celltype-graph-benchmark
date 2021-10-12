@@ -48,6 +48,5 @@ def remove_node(cell_ids, edges_ids,
                                             edges_features,
                                             edges_ids_to_remove)
 
-    print(cell_ids.shape, edges_ids.shape)
     cell_ids, edges_ids = rectify_graph(cell_ids, edges_ids)
     return cell_ids, edges_ids, cell_features, edges_features

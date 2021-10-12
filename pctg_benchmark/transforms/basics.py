@@ -1,11 +1,12 @@
 import numpy as np
 from typing import Optional
 import torch
+from typing import Tuple
 
 
 def compute_to_onehot(feat: np.ndarray,
-                      max_channel: Optional[int] = None,
-                      extreme: Optional[tuple[float, float]] = (0, 1)) -> np.ndarray:
+                      max_channel: int = None,
+                      extreme: Tuple[float, float] = (0, 1)) -> np.ndarray:
     """Create a one hot encoding of an integer array"""
     assert max_channel > 1, f'onehot feature must have at least 1 channel. given: {max_channel}'
 
@@ -26,14 +27,16 @@ def compute_to_onehot(feat: np.ndarray,
 
 
 def compute_to_tensor(feat: np.ndarray,
-                      type: Optional[str] = 'float') -> torch.tensor:
-    if type == 'int':
+                      data_type: str = 'float') -> torch.tensor:
+    if data_type == 'int':
         feat = feat.astype('int64')
         tensor_feat = torch.from_numpy(feat)
         tensor_feat = tensor_feat.long()
-    elif type == 'float':
+
+    elif data_type == 'float':
         tensor_feat = torch.from_numpy(feat)
         tensor_feat = tensor_feat.float()
+
     else:
         raise NotImplementedError
     return tensor_feat
