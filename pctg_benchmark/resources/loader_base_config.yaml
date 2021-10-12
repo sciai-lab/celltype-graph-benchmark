@@ -169,5 +169,4 @@ dataset:
 
   graph_data:
     pre_transform:
-      - name: "transform_name"
-
+      - name:

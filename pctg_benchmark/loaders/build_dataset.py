@@ -99,7 +99,7 @@ def default_build_torch_geometric_data(data_file_path: str,
                       in_edges_attr=edges_features.shape[1],
                       in_features=node_features.shape[1],
                       num_nodes=node_features.shape[0])
-    return graph_data
+    return graph_data, config
 
 
 def sort_files_by_stage(path):

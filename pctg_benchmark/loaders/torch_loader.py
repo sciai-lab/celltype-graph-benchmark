@@ -5,6 +5,7 @@ import torch
 from torch_geometric.data import InMemoryDataset, download_url
 from pctg_benchmark.loaders.build_dataset import default_build_torch_geometric_data
 from pctg_benchmark.loaders.build_dataset import build_cv_splits, build_std_splits
+from pctg_benchmark.utils.io import save_yaml, load_yaml
 
 
 class PCTG(InMemoryDataset, ABC):
@@ -22,13 +23,24 @@ class PCTG(InMemoryDataset, ABC):
         self._processed_dir = processed_dir
         self.in_edges_attr: int = None
         self.in_features: int = None
+        self.raw_transform_config = raw_transform_config
+        self.raw_transform_config_path = os.path.join(processed_dir, 'raw_transform_config.yaml')
         os.makedirs(processed_dir, exist_ok=True)
 
         super().__init__(root, transform, pre_transform)
-        self.raw_transform_config = raw_transform_config
-        if force_process:
+        if force_process or not os.path.isfile(self.processed_paths[0]) or self._check_raw_config():
             self.process()
+
         self.data, self.slices = torch.load(self.processed_paths[0])
+        self.in_edges_attr = int(self.data.in_edges_attr[0])
+        self.in_features = int(self.data.in_features[0])
+
+    def _check_raw_config(self):
+        if not os.path.isfile(self.raw_transform_config_path):
+            return True
+
+        old_config = load_yaml(self.raw_transform_config_path)
+        return old_config != self.raw_transform_config
 
     @abstractmethod
     def get_raw_file_metas(self, *args):
@@ -51,20 +63,18 @@ class PCTG(InMemoryDataset, ABC):
         pass
 
     def build_data_list(self):
-        data_list = []
+        data_list, config = [], {}
         for meta in self.raw_file_metas:
             path, unique_idx = meta['path'], meta['unique_idx']
-            data = default_build_torch_geometric_data(path,
-                                                      self.raw_transform_config,
-                                                      meta)
+            data, config = default_build_torch_geometric_data(path,
+                                                              self.raw_transform_config,
+                                                              meta)
             data_list.append(data)
 
-        return data_list
+        return data_list, config
 
     def process(self):
-        data_list = self.build_data_list()
-        self.in_edges_attr = data_list[0].in_edges_attr,
-        self.in_features = data_list[0].in_features,
+        data_list, config = self.build_data_list()
 
         if self.pre_filter is not None:
             data_list = [data for data in data_list if self.pre_filter(data)]
@@ -74,6 +84,7 @@ class PCTG(InMemoryDataset, ABC):
 
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
+        save_yaml(config, self.raw_transform_config_path)
 
 
 class PCTGCrossValidationSplit(PCTG):

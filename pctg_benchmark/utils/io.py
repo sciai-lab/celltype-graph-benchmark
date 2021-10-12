@@ -36,11 +36,12 @@ def _update_dict(template_dict, up_dict):
 
 
 def load_yaml(config_path):
+
     def join(loader, node):
         seq = loader.construct_sequence(node)
         return ''.join([str(i) for i in seq])
 
-    def update(loader, node):
+    def load(loader, node):
         with open(node.value, 'r') as _f:
             return yaml.full_load(_f)
 
@@ -49,7 +50,8 @@ def load_yaml(config_path):
 
     yaml.add_constructor('!join', join)
     yaml.add_constructor('!home_path', home_path)
-    yaml.add_constructor('!update', update)
+    yaml.add_constructor('!update', load)
+    yaml.add_constructor('!load', load)
     with open(config_path, 'r') as f:
         config = yaml.full_load(f)
 
@@ -63,3 +65,8 @@ def load_yaml(config_path):
             del config['_internal_variables']
 
     return config
+
+
+def save_yaml(config, path):
+    with open(path, "w") as f:
+        yaml.dump(config, f)
