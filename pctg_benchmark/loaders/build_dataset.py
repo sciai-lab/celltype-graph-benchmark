@@ -168,7 +168,7 @@ def build_cv_splits(source_root: str,
 
     dataset_full = sort_files(source_root, file_list_path)
 
-    splits = {i: {'test': [], 'train': []} for i in range(number_splits)}
+    splits = {i: {'val': [], 'train': []} for i in range(number_splits)}
     for stage, stage_dict in dataset_full.items():
         stage_list = list(stage_dict.keys())
         np.random.seed(seed)
@@ -184,7 +184,7 @@ def build_cv_splits(source_root: str,
                 train_split += _split.tolist()
 
             splits[i]['train'] += append_stack_ids(train_split, stage_dict)
-            splits[i]['test'] += append_stack_ids(test_split, stage_dict)
+            splits[i]['val'] += append_stack_ids(test_split, stage_dict)
     return splits
 
 
