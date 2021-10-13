@@ -26,6 +26,10 @@ def compute_to_onehot(feat: np.ndarray,
     return feat_onehot
 
 
+def compute_abs(feat: np.ndarray) -> np.ndarray:
+    return np.abs(feat)
+
+
 def compute_to_tensor(feat: np.ndarray,
                       data_type: str = 'float') -> torch.tensor:
     if data_type == 'int':

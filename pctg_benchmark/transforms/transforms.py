@@ -9,11 +9,12 @@ from typing import List
 @dataclass
 class TransformFactory:
     transform_modules: List[str]
+    default_functional_name_key = 'compute_'
 
     def __post_init__(self):
         for module_name in self.transform_modules:
             module = importlib.import_module(module_name)
-            functions = [function for function in dir(module) if function.find('compute_') == 0]
+            functions = [function for function in dir(module) if function.find(self.default_functional_name_key) == 0]
             for function in functions:
                 func = getattr(module, function)
                 self.__setattr__(to_camel_case(function), class_from_func(func))
