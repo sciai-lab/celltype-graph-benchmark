@@ -25,12 +25,12 @@ def concatenate_features(list_feat):
         raise ValueError("Features must be either all numpy arrays or all torch tensors")
 
 
-def collect_features(features_dict, list_configs):
+def collect_features(features_dict, list_configs, transfrom_factory=None):
     list_feat = []
     for item in list_configs:
         feat = features_dict[item['name']]
         if 'pre_transform' in item:
-            transform = setup_transforms(item['pre_transform'])
+            transform = setup_transforms(item['pre_transform'], transfrom_factory=transfrom_factory)
             feat = transform(feat)
         list_feat.append(feat)
 

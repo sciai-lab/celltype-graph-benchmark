@@ -30,8 +30,8 @@ def compute_abs(feat: np.ndarray) -> np.ndarray:
     return np.abs(feat)
 
 
-def compute_to_tensor(feat: np.ndarray,
-                      data_type: str = 'float') -> torch.tensor:
+def compute_to_torch_tensor(feat: np.ndarray,
+                            data_type: str = 'float') -> torch.tensor:
     if data_type == 'int':
         feat = feat.astype('int64')
         tensor_feat = torch.from_numpy(feat)

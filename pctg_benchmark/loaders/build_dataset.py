@@ -9,7 +9,7 @@ from torch_geometric.data import Data
 
 from pctg_benchmark import pctg_basic_loader_config, default_dataset_file_list
 from pctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
-from pctg_benchmark.transforms.basics import compute_to_tensor
+from pctg_benchmark.transforms.basics import compute_to_torch_tensor
 from pctg_benchmark.utils.io import open_full_stack, load_yaml
 
 
@@ -23,6 +23,7 @@ class ConfigKeyChain:
     edges_features_key: str
     pos_features_key: str
     config: dict
+    register_plugin: list = None
     node_features_config: dict = None
     edges_features_config: dict = None
     pos_features_config: dict = None
@@ -43,29 +44,27 @@ def default_build_torch_geometric_data(data_file_path: str,
         config = load_yaml(pctg_basic_loader_config)
         config = config.get('dataset')
 
-    default_keys = [config.get(key) for key in ('nodes_ids_key',
-                                                'edges_ids_key',
-                                                'nodes_labels_key',
-                                                'edges_labels_key',
-                                                'node_features_key',
-                                                'edges_features_key',
-                                                'pos_features_key')]
+    default_keys = [key_value for key_value in config['keys'].values()]
     stack = open_full_stack(data_file_path, keys=default_keys)
 
-    default_keys += [config]
-    key_config = ConfigKeyChain(*default_keys)
+    key_config = ConfigKeyChain(config=config,
+                                register_plugin=config.get('register_plugin', None),
+                                **config['keys'])
 
     # nodes feat
     node_features = collect_features(stack.get(key_config.node_features_key),
-                                     key_config.node_features_config)
+                                     key_config.node_features_config,
+                                     key_config.register_plugin)
 
     # edges feat
     edges_features = collect_features(stack.get(key_config.edges_features_key),
-                                      key_config.edges_features_config)
+                                      key_config.edges_features_config,
+                                      key_config.register_plugin)
 
     # pos feat
     pos_features = collect_features(stack.get(key_config.pos_features_key),
-                                    key_config.pos_features_config)
+                                    key_config.pos_features_config,
+                                    key_config.register_plugin)
 
     # global graph processing
     (node_ids,
@@ -81,10 +80,10 @@ def default_build_torch_geometric_data(data_file_path: str,
     if len(nodes_to_ignore) > 0:
         raise NotImplementedError("Masked nodes are not implemented")
 
-    node_ids = compute_to_tensor(node_ids, data_type='int')
-    node_labels = compute_to_tensor(node_labels, data_type='int')
-    edges_ids = compute_to_tensor(edges_ids, data_type='int').T
-    edges_labels = compute_to_tensor(edges_labels, data_type='int')
+    node_ids = compute_to_torch_tensor(node_ids, data_type='int')
+    node_labels = compute_to_torch_tensor(node_labels, data_type='int')
+    edges_ids = compute_to_torch_tensor(edges_ids, data_type='int').T
+    edges_labels = compute_to_torch_tensor(edges_labels, data_type='int')
 
     # build torch_geometric Data obj
     graph_data = Data(x=node_features,
