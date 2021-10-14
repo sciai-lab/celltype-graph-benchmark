@@ -9,7 +9,7 @@ from typing import List
 @dataclass
 class TransformFactory:
     transform_modules: List[str] = None
-    default_functional_name_key = 'compute_'
+    default_functional_name_key: str = 'compute_'
 
     def __post_init__(self):
         transform_modules_default: List[str] = ['pctg_benchmark.transforms.basics',
@@ -20,23 +20,23 @@ class TransformFactory:
 
         for module_name in self.transform_modules:
             module = importlib.import_module(module_name)
-            functions = [function.replace(self.default_functional_name_key, '') for function in dir(module)
-                         if function.find(self.default_functional_name_key) == 0]
+            functions = [function for function in dir(module) if function.find(self.default_functional_name_key) == 0]
             for function in functions:
                 func = getattr(module, function)
+                function = function.replace(self.default_functional_name_key, '')
                 self.__setattr__(to_camel_case(function), class_from_func(func))
 
 
-all_transforms = TransformFactory()
+default_factory = TransformFactory()
 
 
-def setup_transforms(transforms_list, transfrom_factory=None):
-    transfrom_factory = transfrom_factory if transfrom_factory is not None else TransformFactory()
+def setup_transforms(transforms_list, transfrom_factory: TransformFactory = None) -> Compose:
+    transfrom_factory = transfrom_factory if transfrom_factory is not None else default_factory
     transforms = []
     for feat_config in transforms_list:
         _feat_config = copy.copy(feat_config)
         name = _feat_config['name']
-        if isinstance(name, str) and hasattr(all_transforms, name):
+        if isinstance(name, str) and hasattr(transfrom_factory, name):
             transform_class = transfrom_factory.__getattribute__(name)
 
         elif hasattr(name, '__call__'):
