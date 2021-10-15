@@ -60,16 +60,15 @@ class PCTG(InMemoryDataset, ABC):
         return ['data.pt']
 
     def download(self):
+        """ To be implemented upon release"""
         # Download to `self.raw_dir`.
         pass
 
     def build_data_list(self):
-        data_list, config = [], {}
+        data_list = []
         for meta in tqdm.tqdm(self.raw_file_metas, desc='Processing RawFiles'):
             path, unique_idx = meta['path'], meta['unique_idx']
-            data, _ = default_build_torch_geometric_data(path,
-                                                              self.raw_transform_config,
-                                                              meta)
+            data, _ = default_build_torch_geometric_data(path, self.raw_transform_config, meta)
             data_list.append(data)
 
         return data_list
