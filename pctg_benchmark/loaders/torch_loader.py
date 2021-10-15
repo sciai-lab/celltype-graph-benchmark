@@ -92,8 +92,6 @@ class PCTG(InMemoryDataset, ABC):
 
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
-
-        print(config)
         save_yaml(config, self.raw_transform_config_path)
 
 
