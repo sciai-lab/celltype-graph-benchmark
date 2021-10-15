@@ -15,7 +15,10 @@ def compute_set_to_value(feat: np.ndarray, value: int = 0) -> np.ndarray:
 
 def compute_set_to_random(feat: np.ndarray, mode: str = 'rand') -> np.ndarray:
     """Replace features with random features - to be used only for sanity check"""
-    if mode == 'rand':
+    print(np.issubdtype(feat.dtype, np.integer))
+    if np.issubdtype(feat.dtype, np.integer):
+        return np.random.randint(0, np.max(feat), *feat.shape)
+    elif mode == 'rand':
         return np.random.rand(*feat.shape)
     elif mode == 'normal':
         return np.random.randn(*feat.shape)
