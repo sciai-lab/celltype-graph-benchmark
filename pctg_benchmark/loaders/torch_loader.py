@@ -6,6 +6,7 @@ from torch_geometric.data import InMemoryDataset, download_url
 from pctg_benchmark.loaders.build_dataset import default_build_torch_geometric_data
 from pctg_benchmark.loaders.build_dataset import build_cv_splits, build_std_splits
 from pctg_benchmark.utils.io import save_yaml, load_yaml
+from pctg_benchmark.utils.utils import get_basic_loader_config
 import tqdm
 
 
@@ -38,10 +39,17 @@ class PCTG(InMemoryDataset, ABC):
     def _check_raw_config(self):
         if not os.path.isfile(self.raw_transform_config_path):
             # if file does not exist default was used
-            return False
+            return True
 
+        if self.raw_transform_config is None:
+            # load default
+            new_config = get_basic_loader_config('dataset')
+        else:
+            new_config = self.raw_transform_config
+
+        # check if configs match if not re-run process
         old_config = load_yaml(self.raw_transform_config_path)
-        return old_config != self.raw_transform_config
+        return old_config != new_config
 
     @abstractmethod
     def get_raw_file_metas(self, *args):
@@ -65,16 +73,16 @@ class PCTG(InMemoryDataset, ABC):
         pass
 
     def build_data_list(self):
-        data_list = []
+        data_list, config = [], None
         for meta in tqdm.tqdm(self.raw_file_metas, desc='Processing RawFiles'):
             path, unique_idx = meta['path'], meta['unique_idx']
-            data, _ = default_build_torch_geometric_data(path, self.raw_transform_config, meta)
+            data, config = default_build_torch_geometric_data(path, self.raw_transform_config, meta)
             data_list.append(data)
 
-        return data_list
+        return data_list, config
 
     def process(self):
-        data_list = self.build_data_list()
+        data_list, config = self.build_data_list()
 
         if self.pre_filter is not None:
             data_list = [data for data in data_list if self.pre_filter(data)]
@@ -85,8 +93,8 @@ class PCTG(InMemoryDataset, ABC):
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
 
-        if self.raw_transform_config is not None:
-            save_yaml(self.raw_transform_config, self.raw_transform_config_path)
+        print(config)
+        save_yaml(config, self.raw_transform_config_path)
 
 
 class PCTGCrossValidationSplit(PCTG):
