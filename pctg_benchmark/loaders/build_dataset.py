@@ -11,6 +11,7 @@ from pctg_benchmark import pctg_basic_loader_config, default_dataset_file_list
 from pctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
 from pctg_benchmark.transforms.basics import compute_to_torch_tensor
 from pctg_benchmark.utils.io import open_full_stack, load_yaml
+from pctg_benchmark.utils.utils import get_basic_loader_config
 from pctg_benchmark.transforms.transforms import TransformFactory
 
 
@@ -41,10 +42,7 @@ def default_build_torch_geometric_data(data_file_path: str,
                                        config: dict = None,
                                        meta: dict = None) -> Data:
 
-    if config is None:
-        config = load_yaml(pctg_basic_loader_config)
-        config = config.get('dataset')
-
+    config = config if config is not None else get_basic_loader_config('dataset')
     default_keys = [key_value for key_value in config['keys'].values()]
     stack = open_full_stack(data_file_path, keys=default_keys)
 

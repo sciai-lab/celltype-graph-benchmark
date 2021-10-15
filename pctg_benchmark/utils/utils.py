@@ -1,5 +1,7 @@
 import numpy as np
 from numba import njit
+from pctg_benchmark.utils.io import load_yaml
+from pctg_benchmark import pctg_basic_loader_config
 
 
 def cantor_sym_depair(z):
@@ -49,3 +51,8 @@ def create_edge_mapping(edges_ids, edges_features, safe_cast=True):
     cantor_edges_ids = edges_ids2cantor_ids(edges_ids)
     return create_features_mapping(cantor_edges_ids, edges_features, safe_cast=safe_cast)
 
+
+def get_basic_loader_config(key: str = None):
+    config = load_yaml(pctg_basic_loader_config)
+    config = config.get(key) if key is not None else config
+    return config
