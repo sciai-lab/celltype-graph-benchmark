@@ -1,21 +1,35 @@
 from torchmetrics import Accuracy, Precision, Recall, F1
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
 class NodeClassificationMetrics:
     num_classes: int
+    ignore_index: Optional[int] = None
 
     def __post_init__(self):
-        self.metrics = {'accuracy_micro': Accuracy(average='micro'),
-                        'accuracy_macro': Accuracy(num_classes=self.num_classes, average='macro'),
-                        'accuracy_class': Accuracy(num_classes=self.num_classes, average=None),
-                        'precision_micro': Precision(average='micro'),
-                        'precision_class': Precision(num_classes=self.num_classes, average=None),
-                        'recall_micro': Recall(average='micro'),
-                        'recall_class': Recall(num_classes=self.num_classes, average=None),
-                        'f1_micro': F1(average='micro'),
-                        'f1_class': F1(num_classes=self.num_classes, average=None)}
+        self.metrics = {'accuracy_micro': Accuracy(average='micro',
+                                                   ignore_index=self.ignore_index),
+                        'accuracy_macro': Accuracy(num_classes=self.num_classes,
+                                                   average='macro',
+                                                   ignore_index=self.ignore_index),
+                        'accuracy_class': Accuracy(num_classes=self.num_classes,
+                                                   average=None,
+                                                   ignore_index=self.ignore_index),
+                        'precision_micro': Precision(average='micro', ignore_index=self.ignore_index),
+                        'precision_class': Precision(num_classes=self.num_classes,
+                                                     average=None,
+                                                     ignore_index=self.ignore_index),
+                        'recall_micro': Recall(average='micro', ignore_index=self.ignore_index),
+                        'recall_class': Recall(num_classes=self.num_classes,
+                                               average=None,
+                                               ignore_index=self.ignore_index),
+                        'f1_micro': F1(average='micro', ignore_index=self.ignore_index),
+                        'f1_class': F1(num_classes=self.num_classes,
+                                       average=None,
+                                       ignore_index=self.ignore_index)
+                        }
 
     def compute_metrics(self, pred, target, step=0):
         results = {}
