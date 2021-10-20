@@ -2,8 +2,9 @@ import os.path
 from typing import Tuple
 from abc import ABC, abstractmethod
 import torch
-from torch_geometric.data import InMemoryDataset, download_url
+from torch_geometric.data import InMemoryDataset
 from pctg_benchmark.loaders.build_dataset import default_build_torch_geometric_data
+from pctg_benchmark.loaders.build_dataset import download_dataset
 from pctg_benchmark.loaders.build_dataset import build_cv_splits, build_std_splits
 from pctg_benchmark.utils.io import save_yaml, load_yaml
 from pctg_benchmark.utils.utils import get_basic_loader_config
@@ -30,6 +31,9 @@ class PCTG(InMemoryDataset, ABC):
         os.makedirs(processed_dir, exist_ok=True)
 
         super().__init__(root, transform, pre_transform)
+
+        self.download()
+
         if force_process or not os.path.isfile(self.processed_paths[0]) or self._check_raw_config():
             self.process()
         self.data, self.slices = torch.load(self.processed_paths[0])
@@ -68,9 +72,8 @@ class PCTG(InMemoryDataset, ABC):
         return ['data.pt']
 
     def download(self):
-        """ To be implemented upon release"""
-        # Download to `self.raw_dir`.
-        pass
+        print('test')
+        download_dataset(self.root)
 
     def build_data_list(self):
         data_list, config = [], None

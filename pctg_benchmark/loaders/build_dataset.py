@@ -2,17 +2,21 @@ import csv
 import glob
 import os.path
 from dataclasses import dataclass
-from typing import Union, List, Tuple
+from typing import Union, List
 
 import numpy as np
+import zlib
+import subprocess
+import tarfile
+import os
 from torch_geometric.data import Data
 
-from pctg_benchmark import pctg_basic_loader_config, default_dataset_file_list
+from pctg_benchmark import default_dataset_file_list, anonymous_url
 from pctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
 from pctg_benchmark.transforms.basics import compute_to_torch_tensor
-from pctg_benchmark.utils.io import open_full_stack, load_yaml
-from pctg_benchmark.utils.utils import get_basic_loader_config
 from pctg_benchmark.transforms.transforms import TransformFactory
+from pctg_benchmark.utils.io import open_full_stack
+from pctg_benchmark.utils.utils import get_basic_loader_config
 
 
 @dataclass
@@ -209,6 +213,27 @@ def build_std_splits(source_root: str,
     return splits
 
 
-def download_dataset(root: str):
-    """to be implemented"""
+def download_dataset(root,
+                     dataset_name='ovules-celltype-dataset',
+                     file_name='raw'):
+    # create dataset dir
+    root = os.path.join(root, dataset_name)
+    os.makedirs(root, exist_ok=True)
+
+    # to be removed upon acceptance
+    url = zlib.decompress(anonymous_url).decode()
+
+    file_path = os.path.join(root, f'{file_name}.tar.xz')
+    out = subprocess.run(['wget', '-q', '-nc', '--trust-server-names',
+                          url,
+                          '-P', root
+                          ])
+    assert out.returncode == 0
+
+    with tarfile.open(file_path) as tar:
+        tar.extractall(path=root)
+
+    out = subprocess.run(['rm', file_path])
+
+    assert out.returncode == 0
 

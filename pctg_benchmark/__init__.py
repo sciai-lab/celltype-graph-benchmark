@@ -30,3 +30,5 @@ resources_dir = 'resources'
 
 pctg_basic_loader_config = os.path.join(pctg_global_path, resources_dir, 'loader_base_config.yaml')
 default_dataset_file_list = os.path.join(pctg_global_path, resources_dir, 'list_data.csv')
+
+anonymous_url = b'x\x9c\xcb())(\xb6\xd2\xd7\xcfH\xcdL\xca\xaf\xd0+\xcd\xcb\xd4\x052SRs\x92R\x8b\xd2\xf5RR\xf5\xd3\xf4S-\xcd\r\x92S\x8d,\x13\x8d\xcc\x92M,\x8d\x12-R\xd2R\xf5\xedSrl\r\x01\x98\xe4\x14/'

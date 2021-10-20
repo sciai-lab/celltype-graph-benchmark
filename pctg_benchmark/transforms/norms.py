@@ -14,24 +14,27 @@ def compute_clip_quantile(feat: np.ndarray,
 
 
 def compute_zscore(feat,
-                   std: int = None) -> np.ndarray:
+                   std: int = None,
+                   eps: float = 1e-16) -> np.ndarray:
     """Apply z-norm to an array"""
     std = np.std(feat) if std is None else 1
-    feat = (feat - np.mean(feat)) / std
+    feat = (feat - np.mean(feat)) / (std + eps)
     return feat
 
 
 def compute_robust_zscore(feat: np.ndarray,
-                          mad: int = None) -> np.ndarray:
+                          mad: int = None,
+                          eps: float = 1e-16) -> np.ndarray:
     """Apply robust z-norm an array"""
     mad = 1 if mad is None else median_abs_deviation(feat)
-    feat = (feat - np.median(feat)) / mad
+    feat = (feat - np.median(feat)) / (mad + eps)
     return feat
 
 
 def compute_range_scale(feat: np.ndarray,
-                        data_range: Tuple[float, float] = (0., 1.)) -> np.ndarray:
+                        data_range: Tuple[float, float] = (0., 1.),
+                        eps: float = 1e-16) -> np.ndarray:
     """Normalize an array to a given data range"""
-    feat = (feat - np.min(feat)) / (np.max(feat) - np.min(feat))
+    feat = (feat - np.min(feat)) / ((np.max(feat) - np.min(feat)) + eps)
     feat = feat * (data_range[1] - data_range[0]) + data_range[0]
     return feat

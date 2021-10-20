@@ -13,9 +13,8 @@ def compute_set_to_value(feat: np.ndarray, value: int = 0) -> np.ndarray:
     return value * np.ones_like(feat)
 
 
-def compute_set_to_random(feat: np.ndarray, mode: str = 'rand') -> np.ndarray:
+def compute_set_to_random(feat: np.ndarray, mode: str = 'normal') -> np.ndarray:
     """Replace features with random features - to be used only for sanity check"""
-    print(np.issubdtype(feat.dtype, np.integer))
     if np.issubdtype(feat.dtype, np.integer):
         return np.random.randint(0, np.max(feat), *feat.shape)
     elif mode == 'rand':
