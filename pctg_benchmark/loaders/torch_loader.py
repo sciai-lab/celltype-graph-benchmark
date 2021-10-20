@@ -19,7 +19,7 @@ class PCTG(InMemoryDataset, ABC):
                  transform=None,
                  pre_transform=None,
                  raw_transform_config: dict = None,
-                 force_process: bool = False) -> None:
+                 force_process: bool = False,) -> None:
 
         self.raw_file_metas = raw_file_metas
         self._raw_file_names = [meta['path'] for meta in raw_file_metas]
@@ -31,9 +31,6 @@ class PCTG(InMemoryDataset, ABC):
         os.makedirs(processed_dir, exist_ok=True)
 
         super().__init__(root, transform, pre_transform)
-
-        self.download()
-
         if force_process or not os.path.isfile(self.processed_paths[0]) or self._check_raw_config():
             self.process()
         self.data, self.slices = torch.load(self.processed_paths[0])
@@ -55,6 +52,13 @@ class PCTG(InMemoryDataset, ABC):
         old_config = load_yaml(self.raw_transform_config_path)
         return old_config != new_config
 
+    @staticmethod
+    def custom_download(grs, raw_path):
+        for _grs in grs:
+            grs_raw_dir = os.path.join(raw_path, _grs)
+            if not os.path.isdir(grs_raw_dir):
+                download_dataset(raw_path, dataset_name=_grs)
+
     @abstractmethod
     def get_raw_file_metas(self, *args):
         pass
@@ -70,10 +74,6 @@ class PCTG(InMemoryDataset, ABC):
     @property
     def processed_file_names(self):
         return ['data.pt']
-
-    def download(self):
-        print('test')
-        download_dataset(self.root)
 
     def build_data_list(self):
         data_list, config = [], None
@@ -108,11 +108,30 @@ class PCTGCrossValidationSplit(PCTG):
                  grs: Tuple[str] = ('es_pca_grs',),
                  number_splits: int = 5,
                  force_process: bool = False,
-                 file_list_path: str = None) -> None:
+                 file_list_path: str = None,
+                 directory_structure: tuple = ('ovules-celltype-dataset', 'raw')) -> None:
+        """
+
+        Parameters
+        ----------
+        root
+        transform
+        pre_transform
+        split
+        phase
+        raw_transform_config
+        grs
+        number_splits
+        force_process
+        file_list_path
+        directory_structure
+        """
 
         name_grs = '_'.join([_grs for _grs in grs])
         processed_dir = os.path.join(root, f'processed_{name_grs}_{phase}_split{split}')
-        raw_file_metas = self.get_raw_file_metas(root, split, phase, grs, file_list_path, number_splits)
+        raw_path = os.path.join(root, directory_structure[0], directory_structure[1])
+        self.custom_download(grs, raw_path)
+        raw_file_metas = self.get_raw_file_metas(raw_path, split, phase, grs, file_list_path, number_splits)
         super().__init__(root=root,
                          raw_file_metas=raw_file_metas,
                          processed_dir=processed_dir,
@@ -122,9 +141,9 @@ class PCTGCrossValidationSplit(PCTG):
                          force_process=force_process)
 
     @staticmethod
-    def get_raw_file_metas(root, split, phase, grs, file_list_path, number_splits):
-        raw_data_paths = [os.path.join(root, 'raw', _grs) for _grs in grs]
-        splits = build_cv_splits(raw_data_paths,
+    def get_raw_file_metas(raw_path, split, phase, grs, file_list_path, number_splits):
+        raw_paths_grs = [os.path.join(raw_path, 'raw', _grs) for _grs in grs]
+        splits = build_cv_splits(raw_paths_grs,
                                  file_list_path=file_list_path,
                                  number_splits=number_splits)
         raw_file_metas = splits[split][phase]
@@ -141,13 +160,31 @@ class PCTGSimpleSplit(PCTG):
                  raw_transform_config: dict = None,
                  grs: Tuple[str] = ('es_pca_grs',),
                  force_process: bool = False,
-                 file_list_path: str = None) -> None:
-
+                 file_list_path: str = None,
+                 directory_structure: tuple = ('ovules-celltype-dataset', 'raw')) -> None:
+        """
+        torch geometric InMemory DataSet
+        Parameters
+        ----------
+        root: root containing the dataset (if not present the dataset will be downloaded)
+        transform: train time transformation
+        pre_transform:
+        ratio: ratio between train, test, and validation
+        seed: random seed, to ensure reproducibility of the splits
+        phase: define if the dataset is the test, train or val split
+        raw_transform_config: single features transfrom to be applied before creating the torch_geometric data object
+        grs:
+        force_process:
+        file_list_path:
+        directory_structure:
+        """
         name_grs = '_'.join([_grs for _grs in grs])
         ratio_name = '_'.join([str(_r).replace('0.', '') for _r in ratio])
 
         processed_dir = os.path.join(root, f'processed_{name_grs}_{ratio_name}_{phase}_seeds{seed}')
-        raw_file_metas = self.get_raw_file_metas(root, ratio, seed, phase, grs, file_list_path)
+        raw_path = os.path.join(root, directory_structure[0], directory_structure[1])
+        self.custom_download(grs, raw_path)
+        raw_file_metas = self.get_raw_file_metas(raw_path, ratio, seed, phase, grs, file_list_path)
         super().__init__(root=root,
                          raw_file_metas=raw_file_metas,
                          processed_dir=processed_dir,
@@ -157,9 +194,9 @@ class PCTGSimpleSplit(PCTG):
                          force_process=force_process)
 
     @staticmethod
-    def get_raw_file_metas(root, ratio, seed, phase, grs, file_list_path):
-        raw_data_paths = [os.path.join(root, 'raw', _grs) for _grs in grs]
-        splits = build_std_splits(raw_data_paths,
+    def get_raw_file_metas(raw_path, ratio, seed, phase, grs, file_list_path):
+        raw_paths_grs = [os.path.join(raw_path, _grs) for _grs in grs]
+        splits = build_std_splits(raw_paths_grs,
                                   ratio,
                                   seed=seed,
                                   file_list_path=file_list_path)

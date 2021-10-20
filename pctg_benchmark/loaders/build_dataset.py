@@ -8,10 +8,11 @@ import numpy as np
 import zlib
 import subprocess
 import tarfile
+import zipfile
 import os
 from torch_geometric.data import Data
 
-from pctg_benchmark import default_dataset_file_list, anonymous_url
+from pctg_benchmark import default_dataset_file_list, anonymous_urls
 from pctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
 from pctg_benchmark.transforms.basics import compute_to_torch_tensor
 from pctg_benchmark.transforms.transforms import TransformFactory
@@ -213,27 +214,55 @@ def build_std_splits(source_root: str,
     return splits
 
 
-def download_dataset(root,
-                     dataset_name='ovules-celltype-dataset',
-                     file_name='raw'):
-    # create dataset dir
-    root = os.path.join(root, dataset_name)
-    os.makedirs(root, exist_ok=True)
+def _un_tar(file_path, root):
+    with tarfile.open(file_path) as tar_f:
+        tar_f.extractall(path=root)
 
-    # to be removed upon acceptance
+
+def _un_zip(file_path, root):
+    with zipfile.ZipFile(file_path) as zip_f:
+        zip_f.extractall(path=root)
+
+
+def download_dataset(root,
+                     dataset_name='es_pca_grs',
+                     mode='zip'):
+
+    os.makedirs(root, exist_ok=True)
+    # TODO to be removed upon acceptance
+    anonymous_url = anonymous_urls.get(dataset_name, None)
+    if anonymous_url is None:
+        raise ValueError(f"Dataset {dataset_name} does not exist")
+
     url = zlib.decompress(anonymous_url).decode()
 
-    file_path = os.path.join(root, f'{file_name}.tar.xz')
-    out = subprocess.run(['wget', '-q', '-nc', '--trust-server-names',
+    if mode == 'zip':
+        ext = '.zip'
+    elif mode == 'tar':
+        ext = '.tar.xz'
+    else:
+        raise NotImplementedError
+
+    file_path = os.path.join(root, f'{dataset_name}{ext}')
+    print(f'Downloading {dataset_name} in {file_path}')
+    out = subprocess.run(['wget',
+                          '-q',  # TODO to be removed after release
+                          '-nc',
+                          '--trust-server-names',
                           url,
                           '-P', root
                           ])
     assert out.returncode == 0
 
-    with tarfile.open(file_path) as tar:
-        tar.extractall(path=root)
+    print(f'Extracting {file_path}')
+    if mode == 'zip':
+        _un_zip(file_path, root)
+    elif mode == 'tar':
+        _un_tar(file_path, root)
+    else:
+        raise NotImplementedError
 
+    print(f'Deleting {file_path}')
     out = subprocess.run(['rm', file_path])
-
     assert out.returncode == 0
 
