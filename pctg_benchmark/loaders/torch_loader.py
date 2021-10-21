@@ -59,6 +59,9 @@ class PCTG(InMemoryDataset, ABC):
             if not os.path.isdir(grs_raw_dir):
                 download_dataset(raw_path, dataset_name=_grs)
 
+    def download(self):
+        pass
+
     @abstractmethod
     def get_raw_file_metas(self, *args):
         pass
@@ -103,7 +106,7 @@ class PCTGCrossValidationSplit(PCTG):
                  transform=None,
                  pre_transform=None,
                  split: int = 0,
-                 phase: str = 'test',
+                 phase: str = 'val',
                  raw_transform_config: dict = None,
                  grs: Tuple[str] = ('es_pca_grs',),
                  number_splits: int = 5,

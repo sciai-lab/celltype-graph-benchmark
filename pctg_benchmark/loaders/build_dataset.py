@@ -45,7 +45,7 @@ class ConfigKeyChain:
 
 def default_build_torch_geometric_data(data_file_path: str,
                                        config: dict = None,
-                                       meta: dict = None) -> Data:
+                                       meta: dict = None) -> (Data, dict):
 
     config = config if config is not None else get_basic_loader_config('dataset')
     default_keys = [key_value for key_value in config['keys'].values()]
@@ -165,7 +165,7 @@ def append_stack_ids(split, stage_dict):
     return split_list
 
 
-def build_cv_splits(source_root: str,
+def build_cv_splits(source_root: Union[str, List[str]],
                     file_list_path: str = None,
                     number_splits: int = 5,
                     seed: int = 0) -> dict:
@@ -192,7 +192,7 @@ def build_cv_splits(source_root: str,
     return splits
 
 
-def build_std_splits(source_root: str,
+def build_std_splits(source_root: Union[str, List[str]],
                      splits_ratios=(0.6, 0.1, 0.3),
                      file_list_path: str = None,
                      seed: int = 0) -> dict:
@@ -206,6 +206,7 @@ def build_std_splits(source_root: str,
         np.random.shuffle(stage_list)
         _splits_ratios = [np.ceil(ratio * len(stage_list)) for ratio in splits_ratios]
         _splits_ratios = np.cumsum(_splits_ratios)[:-1].astype('int64')
+        stage_list = np.array(stage_list)
         train_split, val_split, test_split = np.split(stage_list, _splits_ratios)
 
         splits['train'] += append_stack_ids(train_split, stage_dict)
