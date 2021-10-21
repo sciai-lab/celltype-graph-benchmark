@@ -38,3 +38,9 @@ def compute_range_scale(feat: np.ndarray,
     feat = (feat - np.min(feat)) / ((np.max(feat) - np.min(feat)) + eps)
     feat = feat * (data_range[1] - data_range[0]) + data_range[0]
     return feat
+
+
+def compute_to_unit_vector(feat: np.ndarray, eps: float = 1e-16) -> np.ndarray:
+    norm = np.sqrt(np.sum(feat, axis=1) ** 2)[:, None]
+    feat /= (norm + eps)
+    return feat

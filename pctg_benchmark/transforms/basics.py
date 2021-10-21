@@ -30,12 +30,6 @@ def compute_abs(feat: np.ndarray) -> np.ndarray:
     return np.abs(feat)
 
 
-def compute_to_unit_vector(feat: np.ndarray) -> np.ndarray:
-    norm = np.sqrt(np.sum(feat, axis=1) ** 2)[:, None]
-    feat /= norm
-    return feat
-
-
 def compute_to_torch_tensor(feat: np.ndarray,
                             data_type: str = 'float') -> torch.tensor:
     if data_type == 'int':

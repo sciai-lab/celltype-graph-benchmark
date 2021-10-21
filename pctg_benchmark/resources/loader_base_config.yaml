@@ -13,39 +13,63 @@ dataset:
     # grs dependent
     - name: com_grs
       pre_transform:
-        # - name: ToUnitVector
         - name: Zscore
         - name: ToTorchTensor
-    - name: lrs_orientation_axis1_grs
+    - name: lrs_axis1_grs
       pre_transform:
         #- name: Zscore
-        - name: ToUnitVector
         - name: ToTorchTensor
-    - name: lrs_orientation_axis2_grs
+    - name: lrs_axis2_grs
       pre_transform:
         #- name: Zscore
-        - name: ToUnitVector
         - name: ToTorchTensor
-    - name: lrs_orientation_axis3_grs
+    - name: lrs_axis3_grs
       pre_transform:
         #- name: Zscore
-        - name: ToUnitVector
         - name: ToTorchTensor
-    - name: pca_orientation_axis1_grs
+    - name: pca_axis1_grs
       pre_transform:
         #- name: Zscore
-        - name: ToUnitVector
         - name: ToTorchTensor
-    - name: pca_orientation_axis3_grs
+    - name: pca_axis3_grs
       pre_transform:
         #- name: Zscore
-        - name: ToUnitVector
         - name: ToTorchTensor
     - name: pca_orientation_axis3_grs
       pre_transform:
         #- name: Zscore
         - name: ToUnitVector
         - name: ToTorchTensor
+    #- name: lrs_orientation_axis1_grs
+    #  pre_transform:
+    #    #- name: Zscore
+    #    - name: ToUnitVector
+    #    - name: ToTorchTensor
+    #- name: lrs_orientation_axis2_grs
+    #  pre_transform:
+    #    #- name: Zscore
+    #    - name: ToUnitVector
+    #    - name: ToTorchTensor
+    #- name: lrs_orientation_axis3_grs
+    #  pre_transform:
+    #    #- name: Zscore
+    #    - name: ToUnitVector
+    #    - name: ToTorchTensor
+    #- name: pca_orientation_axis1_grs
+    #  pre_transform:
+    #    #- name: Zscore
+    #    - name: ToUnitVector
+    #    - name: ToTorchTensor
+    #- name: pca_orientation_axis3_grs
+    #  pre_transform:
+    #    #- name: Zscore
+    #    - name: ToUnitVector
+    #    - name: ToTorchTensor
+    #- name: pca_orientation_axis3_grs
+    #  pre_transform:
+    #    #- name: Zscore
+    #    - name: ToUnitVector
+    #    - name: ToTorchTensor
     # purely graph
     - name: degree_centrality
       pre_transform:
