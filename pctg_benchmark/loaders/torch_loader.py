@@ -131,7 +131,7 @@ class PCTGCrossValidationSplit(PCTG):
         """
 
         name_grs = '_'.join([_grs for _grs in grs])
-        processed_dir = os.path.join(root, f'processed_{name_grs}_{phase}_split{split}')
+        processed_dir = os.path.join(root, f'processed_{name_grs}_{phase}_split{split}_num_splits{number_splits}')
         raw_path = os.path.join(root, directory_structure[0], directory_structure[1])
         self.custom_download(grs, raw_path)
         raw_file_metas = self.get_raw_file_metas(raw_path, split, phase, grs, file_list_path, number_splits)
@@ -145,7 +145,7 @@ class PCTGCrossValidationSplit(PCTG):
 
     @staticmethod
     def get_raw_file_metas(raw_path, split, phase, grs, file_list_path, number_splits):
-        raw_paths_grs = [os.path.join(raw_path, 'raw', _grs) for _grs in grs]
+        raw_paths_grs = [os.path.join(raw_path, _grs) for _grs in grs]
         splits = build_cv_splits(raw_paths_grs,
                                  file_list_path=file_list_path,
                                  number_splits=number_splits)
