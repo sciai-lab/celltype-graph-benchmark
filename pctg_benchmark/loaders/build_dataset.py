@@ -146,13 +146,12 @@ def sort_files(source_root: Union[str, List[str]],
                 dataset_key[stack_idx].append({'stage': key,
                                                'stack': stack_name,
                                                'stack_idx': stack_idx,
-                                               'multiplicity': i,
+                                               'multiplicity': str(i),
                                                'base': base,
                                                'unique_idx': unique_idx,
                                                'path': stack_path})
 
         dataset_full[key] = dataset_key
-
     return dataset_full
 
 
@@ -245,7 +244,7 @@ def download_dataset(root,
         raise NotImplementedError
 
     file_path = os.path.join(root, f'{dataset_name}{ext}')
-    print(f'Downloading {dataset_name} in {file_path}')
+    print(f'Downloading {dataset_name} in {file_path}... this will take several minutes')
     out = subprocess.run(['wget',
                           '-q',  # TODO to be removed after release
                           '-nc',
