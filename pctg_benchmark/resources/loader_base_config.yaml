@@ -42,117 +42,96 @@ dataset:
     - name: lrs_orientation_axis1_grs
       pre_transform:
         - name: ToUnitVector
-        #- name: Zscore
         - name: ToTorchTensor
     - name: lrs_orientation_axis2_grs
       pre_transform:
         - name: ToUnitVector
-        #- name: Zscore
         - name: ToTorchTensor
     - name: lrs_orientation_axis3_grs
       pre_transform:
         - name: ToUnitVector
-        #- name: Zscore
         - name: ToTorchTensor
     - name: pca_orientation_axis1_grs
       pre_transform:
         - name: ToUnitVector
-        #- name: Zscore
         - name: ToTorchTensor
     - name: pca_orientation_axis2_grs
       pre_transform:
         - name: ToUnitVector
-        #- name: Zscore
         - name: ToTorchTensor
     - name: pca_orientation_axis3_grs
       pre_transform:
-        #- name: Zscore
         - name: ToUnitVector
         - name: ToTorchTensor
     # purely graph
     - name: degree_centrality
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     - name: rw_centrality
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     - name: hops_to_bg
       pre_transform:
         - name: ToOnehot
           max_channel: 5
-          extreme: [-1, 1]
+          extreme: [0, 1]
         - name: ToTorchTensor
     # grs independent
     - name: volume_um
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     - name: surface_um
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     # -- length features
     - name: length_axis1_grs
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     - name: length_axis2_grs
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     - name: length_axis3_grs
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     # -- dot features
     - name: lrs_axis12_dot_grs
       pre_transform:
         - name: Abs
-        - name: Zscore
         - name: ToTorchTensor
     - name: lrs_axis2_angle_grs
       pre_transform:
         - name: Abs
-        - name: Zscore
         - name: ToTorchTensor
     - name: lrs_proj_axis1_grs
       pre_transform:
         - name: Abs
-        - name: Zscore
         - name: ToTorchTensor
     - name: lrs_proj_axis2_grs
       pre_transform:
         - name: Abs
-        - name: Zscore
         - name: ToTorchTensor
     - name: lrs_proj_axis3_grs
       pre_transform:
         - name: Abs
-        - name: Zscore
         - name: ToTorchTensor
     - name: pca_proj_axis1_grs
       pre_transform:
         - name: Abs
-        - name: Zscore
         - name: ToTorchTensor
     - name: pca_proj_axis2_grs
       pre_transform:
         - name: Abs
-        - name: Zscore
         - name: ToTorchTensor
     - name: pca_proj_axis3_grs
       pre_transform:
         - name: Abs
-        - name: Zscore
         - name: ToTorchTensor
     # pca features
     - name: pca_explained_variance_grs
@@ -162,19 +141,16 @@ dataset:
     # not invariant but only because of permutations
     #- name: proj_length_unit_sphere
     #  pre_transform:
-    #    - name: ClipQuantile
     #    - name: Zscore
     #    - name: ToTorchTensor
 
   edges_features:
     - name: surface_um
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     - name: com_distance_um
       pre_transform:
-        - name: ClipQuantile
         - name: Zscore
         - name: ToTorchTensor
     - name: com_grs
@@ -183,18 +159,22 @@ dataset:
         - name: ToTorchTensor
     - name: lrs_dot_axis1_grs
       pre_transform:
+        - name: Abs
         - name: Zscore
         - name: ToTorchTensor
     - name: lrs_dot_axis2_grs
       pre_transform:
+        - name: Abs
         - name: Zscore
         - name: ToTorchTensor
     - name: lrs_dot_axis3_grs
       pre_transform:
+        - name: Abs
         - name: Zscore
         - name: ToTorchTensor
     - name: lrs_proj_grs
       pre_transform:
+        - name: Abs
         - name: Zscore
         - name: ToTorchTensor
 
