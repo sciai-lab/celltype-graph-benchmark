@@ -83,7 +83,7 @@ def default_build_torch_geometric_data(data_file_path: str,
     # nodes to ignore should be implemented as a node mask
     node_labels, nodes_to_ignore = map_nodes_labels(stack.get(key_config.nodes_labels_key))
     if len(nodes_to_ignore) > 0:
-        raise NotImplementedError("Masked nodes are not implemented")
+        print("Masked nodes are not implemented")
 
     node_ids = compute_to_torch_tensor(node_ids, data_type='int')
     node_labels = compute_to_torch_tensor(node_labels, data_type='int')
