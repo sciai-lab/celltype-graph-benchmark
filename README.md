@@ -1,8 +1,11 @@
 # Plant CellTypeGraph Benchmark
 A new graph benchmark for node classification
 
-# dependencies
+# Requirements
 - linux
+- Anaconda/miniconda
+
+# dependencies
 - python >= 3.7
 - h5py
 - pyaml
@@ -19,11 +22,12 @@ conda create -n pctg -c rusty1s -c pytorch -c nvidia -c conda-forge numpy scipy 
 ```
 conda create -n pctg -c rusty1s -c pytorch -c conda-forge numpy scipy matplotlib h5py pyaml tqdm pytorch torchvision cudatoolkit=10.2 pytorch-metrics pytorch-geometric
 ```
-- for cpu only 
+- for cpu only
 ```
 conda create -n pctg -c rusty1s -c pytorch -c conda-forge numpy scipy matplotlib h5py pyaml tqdm pytorch torchvision cpuonly pytorch-metrics pytorch-geometric 
 ```
 ## Install Plant CellTypeGraph Benchmark
+From inside the project root:
 ```
 pip install .
 ```
