@@ -2,8 +2,8 @@
 A new graph benchmark for node classification
 
 # Requirements
-- linux
-- Anaconda/miniconda
+- Linux
+- Anaconda / miniconda
 
 # dependencies
 - python >= 3.7
