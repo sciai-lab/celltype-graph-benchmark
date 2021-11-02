@@ -34,8 +34,9 @@ class PCTG(InMemoryDataset, ABC):
         if force_process or not os.path.isfile(self.processed_paths[0]) or self._check_raw_config():
             self.process()
         self.data, self.slices = torch.load(self.processed_paths[0])
-        self.in_edges_attr = int(self.data.in_edges_attr[0])
-        self.in_features = int(self.data.in_features[0])
+
+        self.in_edges_attr = int(self.data.edge_attr.shape[1])
+        self.in_features = int(self.data.x.shape[1])
 
     def _check_raw_config(self):
         if not os.path.isfile(self.raw_transform_config_path):
