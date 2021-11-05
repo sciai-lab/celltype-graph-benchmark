@@ -1,6 +1,30 @@
 from torchmetrics import Accuracy, Precision, Recall, F1
 from dataclasses import dataclass
 from typing import Optional
+import numpy as np
+
+
+def aggregate_class(score, index=None, return_num_nan=True):
+    """
+    This functions compute the means over the class accuracy.
+    Moreover it will remove index (like 7, es) and ignore nan.
+    """
+    score = np.array(score)
+
+    # ignore 7
+    if index is not None:
+        score = np.delete(score, index)
+
+    # remove nan
+    mask = np.isnan(score)
+    score = score[~mask]
+    mean_score = np.mean(score)
+
+    if return_num_nan:
+        num_nan = np.sum(mask)
+        return mean_score, num_nan
+    else:
+        return mean_score
 
 
 @dataclass
