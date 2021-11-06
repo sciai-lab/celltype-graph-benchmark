@@ -1,4 +1,7 @@
 from torchmetrics import Accuracy, Precision, Recall, F1
+from torchmetrics.functional import dice_score
+from torch import Tensor
+import torch
 from dataclasses import dataclass
 from typing import Optional
 import numpy as np
@@ -27,6 +30,21 @@ def aggregate_class(score, index=None, return_num_nan=True):
         return mean_score
 
 
+class Dice:
+    def __init__(self):
+        self.dice = dice_score
+
+    def __call__(self, preds: Tensor, target: Tensor):
+        if isinstance(preds, torch.LongTensor):
+            return torch.tensor(0.)
+
+        inv_preds = 1 - preds
+        preds_md = torch.stack([preds, inv_preds], 1)
+
+        score = self.dice(preds_md, target, bg=True)
+        return score
+
+
 @dataclass
 class NodeClassificationMetrics:
     num_classes: int
@@ -52,7 +70,8 @@ class NodeClassificationMetrics:
                         'f1_micro': F1(average='micro', ignore_index=self.ignore_index),
                         'f1_class': F1(num_classes=self.num_classes,
                                        average=None,
-                                       ignore_index=self.ignore_index)
+                                       ignore_index=self.ignore_index),
+                        'dice': Dice(),
                         }
 
     def compute_metrics(self, pred, target, step=0):
