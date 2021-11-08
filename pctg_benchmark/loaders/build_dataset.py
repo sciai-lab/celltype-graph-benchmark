@@ -39,8 +39,8 @@ class ConfigKeyChain:
     def __post_init__(self):
         self.node_features_config = self.config.get('node_features')
         self.edges_features_config = self.config.get('edges_features')
-        self.pos_features_config = self.config.get('pos_features')
-        self.graph_data_config = self.config.get('graph_data')
+        self.pos_features_config = self.config.get('pos_features', None)
+        self.graph_data_config = self.config.get('graph_data', None)
 
 
 def default_build_torch_geometric_data(data_file_path: str,
@@ -67,9 +67,12 @@ def default_build_torch_geometric_data(data_file_path: str,
                                       transfrom_factory=default_factory)
 
     # pos feat
-    pos_features = collect_features(stack.get(key_config.pos_features_key),
-                                    list_configs=key_config.pos_features_config,
-                                    transfrom_factory=default_factory)
+    if key_config.pos_features_config is not None:
+        pos_features = collect_features(stack.get(key_config.pos_features_key),
+                                        list_configs=key_config.pos_features_config,
+                                        transfrom_factory=default_factory)
+    else:
+        pos_features = None
 
     # global graph processing
     (node_ids,

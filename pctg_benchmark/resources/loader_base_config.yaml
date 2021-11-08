@@ -15,30 +15,6 @@ dataset:
       pre_transform:
         - name: Zscore
         - name: ToTorchTensor
-    #- name: lrs_axis1_grs
-    #  pre_transform:
-    #    - name: Zscore
-    #    - name: ToTorchTensor
-    #- name: lrs_axis2_grs
-    #  pre_transform:
-    #    - name: Zscore
-    #    - name: ToTorchTensor
-    #- name: lrs_axis3_grs
-    #  pre_transform:
-    #    - name: Zscore
-    #    - name: ToTorchTensor
-    #- name: pca_axis1_grs
-    #  pre_transform:
-    #    - name: Zscore
-    #    - name: ToTorchTensor
-    #- name: pca_axis2_grs
-    #  pre_transform:
-    #    - name: Zscore
-    #    - name: ToTorchTensor
-    #- name: pca_axis3_grs
-    #  pre_transform:
-    #    - name: Zscore
-    #    - name: ToTorchTensor
     - name: lrs_orientation_axis1_grs
       pre_transform:
         - name: ToUnitVector
@@ -138,11 +114,6 @@ dataset:
       pre_transform:
         - name: Zscore
         - name: ToTorchTensor
-    # not invariant but only because of permutations
-    #- name: proj_length_unit_sphere
-    #  pre_transform:
-    #    - name: Zscore
-    #    - name: ToTorchTensor
 
   edges_features:
     - name: surface_um
@@ -177,9 +148,6 @@ dataset:
         - name: Abs
         - name: Zscore
         - name: ToTorchTensor
-
-  pos_features:
-    - name: hollow_fps_samples_grs
 
   graph_data:
     pre_transform:
