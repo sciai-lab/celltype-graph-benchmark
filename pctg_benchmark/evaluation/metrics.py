@@ -34,14 +34,14 @@ class Dice:
     def __init__(self):
         self.dice = dice_score
 
-    def __call__(self, preds: Tensor, target: Tensor):
-        if isinstance(preds, torch.LongTensor):
+    def __call__(self, pred: Tensor, target: Tensor):
+        if isinstance(pred, torch.LongTensor):
             return torch.tensor(0.)
 
-        inv_preds = 1 - preds
-        preds_md = torch.stack([preds, inv_preds], 1)
+        inv_pred = 1 - pred
+        pred_md = torch.stack([inv_pred, pred], 1)
 
-        score = self.dice(preds_md, target, bg=True)
+        score = self.dice(pred_md, target, bg=True)
         return score
 
 
