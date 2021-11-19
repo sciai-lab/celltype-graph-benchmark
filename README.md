@@ -36,14 +36,14 @@ pip install .
 * create CellTypeGraph simple split loader: 
 ```
 from pctg_benchmark.loaders.torch_loader import get_split_loaders
-loader = get_split_loaders(root='/home/user/data/pctg_data/',)
+loader = get_split_loaders(root='./ctg_data/',)
 print(loader['train'], loader['val'], loader['test'])
 ```
 
 * create CellTypeGraph cross validation loader:
 ```
 from pctg_benchmark.loaders.torch_loader import get_cross_validation_loaders
-loader = get_cross_validation_loaders(root='/home/user/data/pctg_data/',, grs=('label_grs_surface', ),)
+loader = get_cross_validation_loaders(root='./ctg_data/',)
 for split, loader in loader.items():
     print(split, loader['train'], loader['val'])
 ```
