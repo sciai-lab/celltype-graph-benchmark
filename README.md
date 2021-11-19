@@ -1,4 +1,4 @@
-# Plant CellTypeGraph Benchmark
+# CellTypeGraph Benchmark
 A new graph benchmark for node classification
 
 # Requirements
@@ -26,23 +26,38 @@ conda create -n pctg -c rusty1s -c pytorch -c conda-forge numpy scipy matplotlib
 ```
 conda create -n pctg -c rusty1s -c pytorch -c conda-forge numpy scipy matplotlib h5py pyaml tqdm pytorch torchvision cpuonly pytorch-metrics pytorch-geometric 
 ```
-## Install Plant CellTypeGraph Benchmark
+## Install CellTypeGraph Benchmark
 From inside the project root:
 ```
 pip install .
 ```
 
-## Examples
-* create pytorch geometric dataset 
+## Minimal Example
+* create CellTypeGraph simple split loader: 
 ```
-from pctg_benchmark.loaders import PCTGSimpleSplit
-train_dataset = PCTGSimpleSplit(root='./', grs=('es_pca_grs', ), phase='train')
-val_dataset = PCTGSimpleSplit(root='./', grs=('es_pca_grs', ), phase='val')
-test_dataset = PCTGSimpleSplit(root='./', grs=('es_pca_grs', ), phase='test')
+from pctg_benchmark.loaders.torch_loader import get_split_loaders
+loader = get_split_loaders(root='/home/user/data/pctg_data/',)
+print(loader['train'], loader['val'], loader['test'])
 ```
-* Evaluate results
+
+* create CellTypeGraph cross validation loader:
+```
+from pctg_benchmark.loaders.torch_loader import get_cross_validation_loaders
+loader = get_cross_validation_loaders(root='/home/user/data/pctg_data/',, grs=('label_grs_surface', ),)
+for split, loader in loader.items():
+    print(split, loader['train'], loader['val'])
+```
+
+* Evaluate results:
 ```
 from pctg_benchmark.evaluation.metrics import NodeClassificationMetrics
-eval_metrics = NodeClassificationMetrics(num_class=9)
-eval_metrics.compute_metrics(predictions, target)
+eval_metrics = NodeClassificationMetrics(num_classes=9)
+
+predictions = torch.randint(9, (1000,))
+target = torch.randint(9, (1000,))
+results = eval_metrics.compute_metrics(predictions, target)
+class_average_accuracy, _ = aggregate_class(results['accuracy_class'], index=7)
+
+print(f"global accuracy: {results['accuracy_micro']: .3f}")
+print(f"class average accuracy: {class_average_accuracy: .3f}")
 ```

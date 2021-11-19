@@ -31,13 +31,18 @@ def aggregate_class(score, index=None, return_num_nan=True):
 
 
 class Dice:
+    """
+    Wrapper around torchmetric.functional.dice_score
+    """
     def __init__(self):
         self.dice = dice_score
 
     def __call__(self, pred: Tensor, target: Tensor):
         if isinstance(pred, torch.LongTensor):
+            """ Ignore if predictions are categorical"""
             return torch.tensor(0.)
 
+        # works only for binary
         inv_pred = 1 - pred
         pred_md = torch.stack([inv_pred, pred], 1)
 
