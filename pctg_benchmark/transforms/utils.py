@@ -40,7 +40,7 @@ def class_from_func(func):
     return produced_class
 
 
-def to_camel_case(name):
+def _to_camel_case(name):
     new_name = []
     i = 0
     while i < len(name):
@@ -54,3 +54,11 @@ def to_camel_case(name):
             new_name.append(_x)
         i += 1
     return ''.join(new_name)
+
+
+def to_camel_case(name):
+    name = name[0].capitalize() + name[1:]
+    while name.find('_') != -1:
+        idx = name.find('_')
+        name = name[:idx] + name[idx + 1].capitalize() + name[idx + 2:]
+    return name

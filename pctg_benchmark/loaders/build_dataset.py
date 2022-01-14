@@ -46,7 +46,6 @@ class ConfigKeyChain:
 def default_build_torch_geometric_data(data_file_path: str,
                                        config: dict = None,
                                        meta: dict = None) -> (Data, dict):
-
     config = config if config is not None else get_basic_loader_config('dataset')
     default_keys = [key_value for key_value in config['keys'].values()]
     stack = open_full_stack(data_file_path, keys=default_keys)
@@ -57,22 +56,22 @@ def default_build_torch_geometric_data(data_file_path: str,
 
     default_factory = TransformFactory(key_config.register_plugin) if key_config.register_plugin is not None else None
     # nodes feat
-    node_features = collect_features(stack.get(key_config.node_features_key),
-                                     list_configs=key_config.node_features_config,
-                                     transfrom_factory=default_factory)
+    node_features, node_slices = collect_features(stack.get(key_config.node_features_key),
+                                                  list_configs=key_config.node_features_config,
+                                                  transfrom_factory=default_factory)
 
     # edges feat
-    edges_features = collect_features(stack.get(key_config.edges_features_key),
-                                      list_configs=key_config.edges_features_config,
-                                      transfrom_factory=default_factory)
+    edges_features, edges_slices = collect_features(stack.get(key_config.edges_features_key),
+                                                    list_configs=key_config.edges_features_config,
+                                                    transfrom_factory=default_factory)
 
     # pos feat
     if key_config.pos_features_config is not None:
-        pos_features = collect_features(stack.get(key_config.pos_features_key),
-                                        list_configs=key_config.pos_features_config,
-                                        transfrom_factory=default_factory)
+        pos_features, pos_slices = collect_features(stack.get(key_config.pos_features_key),
+                                                    list_configs=key_config.pos_features_config,
+                                                    transfrom_factory=default_factory)
     else:
-        pos_features = None
+        pos_features, pos_slices = None, None
 
     # global graph processing
     (node_ids,
@@ -95,12 +94,15 @@ def default_build_torch_geometric_data(data_file_path: str,
 
     # build torch_geometric Data obj
     graph_data = Data(x=node_features,
+                      x_slices=node_slices,
                       y=node_labels,
                       pos=pos_features,
+                      pos_slices=pos_slices,
                       file_path=data_file_path,
                       metadata=meta,
                       node_ids=node_ids,
                       edge_attr=edges_features,
+                      edge_slices=edges_slices,
                       edge_y=edges_labels,
                       edge_index=edges_ids,
                       in_edges_attr=edges_features.shape[1],
@@ -171,7 +173,6 @@ def build_cv_splits(source_root: Union[str, List[str]],
                     file_list_path: str = None,
                     number_splits: int = 5,
                     seed: int = 0) -> dict:
-
     dataset_full = sort_files(source_root, file_list_path)
 
     splits = {i: {'val': [], 'train': []} for i in range(number_splits)}
@@ -230,7 +231,6 @@ def _un_zip(file_path, root):
 def download_dataset(root,
                      dataset_name='es_pca_grs',
                      mode='zip'):
-
     os.makedirs(root, exist_ok=True)
     # TODO to be removed upon acceptance
     anonymous_url = anonymous_urls.get(dataset_name, None)
@@ -268,4 +268,3 @@ def download_dataset(root,
     print(f'Deleting {file_path}')
     out = subprocess.run(['rm', file_path])
     assert out.returncode == 0
-

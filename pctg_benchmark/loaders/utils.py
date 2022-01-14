@@ -26,15 +26,22 @@ def concatenate_features(list_feat):
 
 
 def collect_features(features_dict, list_configs, transfrom_factory=None):
-    list_feat = []
-    for item in list_configs:
+    list_feat, list_slice, current = [], [], 0
+    for i, item in enumerate(list_configs):
         feat = features_dict[item['name']]
         if 'pre_transform' in item:
             transform = setup_transforms(item['pre_transform'], transfrom_factory=transfrom_factory)
             feat = transform(feat)
         list_feat.append(feat)
 
-    return concatenate_features(list_feat)
+        # save slice for rotation and scaling transform
+        dim = 1 if feat.ndim == 1 else feat.shape[1]
+        list_slice.append({'name': item['name'],
+                           'idx': i,
+                           'slice': (current, current + dim),
+                           })
+        current += dim
+    return concatenate_features(list_feat), list_slice
 
 
 def remove_edge_full(edges_ids,
@@ -52,7 +59,6 @@ def remove_node_full(nodes_ids, edges_ids,
                      nodes_label, edges_label,
                      nodes_features, edges_features,
                      ids_to_remove: Tuple[int]):
-
     for offset, id_to_rm in enumerate(ids_to_remove):
         original_id_to_rm = id_to_rm - offset
         _, _, nodes_label, edges_label = remove_node(nodes_ids,
@@ -89,5 +95,3 @@ def map_nodes_labels(nodes_label):
         else:
             mapped_labels[i] = new_label
     return mapped_labels, nodes_to_mask
-
-
