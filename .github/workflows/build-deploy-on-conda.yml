@@ -21,7 +21,7 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
-    - name: Build PlantSeg
+    - name: Build CTG-Benchmark
       run: |
           conda install -q conda-build
           conda build -c rusty1s -c pytorch -c conda-forge conda-recipe
