@@ -1,1 +1,1 @@
-from ctg_benchmark.loaders.torch_loader import PCTGSimpleSplit, PCTGCrossValidationSplit
+from ctg_benchmark.loaders.torch_loader import CTGSimpleSplit, CTGCrossValidationSplit

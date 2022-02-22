@@ -12,7 +12,7 @@ from ctg_benchmark.utils.utils import get_basic_loader_config
 import tqdm
 
 
-class PCTG(InMemoryDataset, ABC):
+class CTG(InMemoryDataset, ABC):
 
     def __init__(self, root,
                  raw_file_metas: list,
@@ -103,7 +103,7 @@ class PCTG(InMemoryDataset, ABC):
         save_yaml(config, self.raw_transform_config_path)
 
 
-class PCTGCrossValidationSplit(PCTG):
+class CTGCrossValidationSplit(CTG):
     def __init__(self, root,
                  transform=None,
                  pre_transform=None,
@@ -158,7 +158,7 @@ class PCTGCrossValidationSplit(PCTG):
         return raw_file_metas
 
 
-class PCTGSimpleSplit(PCTG):
+class CTGSimpleSplit(CTG):
     def __init__(self, root,
                  transform=None,
                  pre_transform=None,
@@ -241,15 +241,15 @@ def get_split_loaders(root,
     """
     loaders = {'train': None, 'val': None, 'test': None}
     for mode in loaders:
-        mode_dataset = PCTGSimpleSplit(root=root,
-                                       phase=mode,
-                                       transform=transform,
-                                       pre_transform=pre_transform,
-                                       ratio=ratio,
-                                       seed=seed,
-                                       raw_transform_config=raw_transform_config,
-                                       grs=grs,
-                                       force_process=force_process)
+        mode_dataset = CTGSimpleSplit(root=root,
+                                      phase=mode,
+                                      transform=transform,
+                                      pre_transform=pre_transform,
+                                      ratio=ratio,
+                                      seed=seed,
+                                      raw_transform_config=raw_transform_config,
+                                      grs=grs,
+                                      force_process=force_process)
 
         shuffle = shuffle if mode == 'train' else False
         loaders[mode] = DataLoader(mode_dataset,
@@ -291,16 +291,16 @@ def get_cross_validation_loaders(root,
     for split in range(number_splits):
         loaders = {'train': None, 'val': None}
         for mode in loaders:
-            mode_dataset = PCTGCrossValidationSplit(root=root,
-                                                    split=split,
-                                                    phase=mode,
-                                                    transform=transform,
-                                                    pre_transform=pre_transform,
-                                                    number_splits=number_splits,
-                                                    seed=seed,
-                                                    raw_transform_config=raw_transform_config,
-                                                    grs=grs,
-                                                    force_process=force_process)
+            mode_dataset = CTGCrossValidationSplit(root=root,
+                                                   split=split,
+                                                   phase=mode,
+                                                   transform=transform,
+                                                   pre_transform=pre_transform,
+                                                   number_splits=number_splits,
+                                                   seed=seed,
+                                                   raw_transform_config=raw_transform_config,
+                                                   grs=grs,
+                                                   force_process=force_process)
 
             shuffle = shuffle if mode == 'train' else False
             loaders[mode] = DataLoader(mode_dataset,

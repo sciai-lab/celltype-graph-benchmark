@@ -25,11 +25,11 @@ net_name_mapping = {key: original_name_mapping[value] for key, value in inv_gt_m
 
 
 # Find the global path
-pctg_global_path = Path(__file__).parent.absolute()
+ctg_global_path = Path(__file__).parent.absolute()
 resources_dir = 'resources'
 
-pctg_basic_loader_config = os.path.join(pctg_global_path, resources_dir, 'loader_base_config.yaml')
-default_dataset_file_list = os.path.join(pctg_global_path, resources_dir, 'list_data.csv')
+ctg_basic_loader_config = os.path.join(ctg_global_path, resources_dir, 'loader_base_config.yaml')
+default_dataset_file_list = os.path.join(ctg_global_path, resources_dir, 'list_data.csv')
 
 # TODO path need to be decoded upon acceptance
 anonymous_urls = {'trivial_grs': b'x\x9c\xcb())(\xb6\xd2\xd7\xcfH\xcdL\xca\xaf\xd0+\xcd\xcb\xd4\x052SRs\x92R\x8b\xd2\xf5RR\xf5\xd3\xf4\x93\x93\x13-\xcc\x0c-\x93\xcd,M\xd2LLL\x12\x93\xccM,\xf5\xedSrl\r\x01\x97\x9a\x13\xd2',
