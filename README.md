@@ -6,30 +6,26 @@ A new graph benchmark for node classification
 - Anaconda / miniconda
 
 # dependencies
-- python >= 3.7
+- python >= 3.8
 - h5py
+- requests
 - pyaml
 - pytorch
 - pytorch_geometric
 - torchmetrics
 
-## Install dependencies using conda
+## Install CellTypeGraph Benchmark using conda
 - for cuda 11.1
 ```
-conda create -n ctg -c rusty1s -c pytorch -c nvidia -c conda-forge numpy scipy matplotlib h5py pyaml tqdm pytorch torchvision cudatoolkit=11.1 pytorch-metrics pytorch-geometric
+conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchmark cudatoolkit=11.1
 ```
 - for cuda 10.2
 ```
-conda create -n ctg -c rusty1s -c pytorch -c conda-forge numpy scipy matplotlib h5py pyaml tqdm pytorch torchvision cudatoolkit=10.2 pytorch-metrics pytorch-geometric
+conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchmark cudatoolkit=10.2
 ```
 - for cpu only
 ```
-conda create -n ctg -c rusty1s -c pytorch -c conda-forge numpy scipy matplotlib h5py pyaml tqdm pytorch torchvision cpuonly pytorch-metrics pytorch-geometric 
-```
-## Install CellTypeGraph Benchmark
-From inside the project root:
-```
-pip install .
+conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchmark cpuonly 
 ```
 
 ## Minimal Example
