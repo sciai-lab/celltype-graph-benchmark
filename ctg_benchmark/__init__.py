@@ -23,7 +23,6 @@ original_name_mapping = {0: 'ignore',
                          14: 'L5 - merged with L4'}
 net_name_mapping = {key: original_name_mapping[value] for key, value in inv_gt_mapping.items()}
 
-
 # Find the global path
 ctg_global_path = Path(__file__).parent.absolute()
 resources_dir = 'resources'
@@ -32,9 +31,9 @@ ctg_basic_loader_config = os.path.join(ctg_global_path, resources_dir, 'loader_b
 default_dataset_file_list = os.path.join(ctg_global_path, resources_dir, 'list_data.csv')
 
 # TODO path need to be decoded upon acceptance
-anonymous_urls = {'trivial_grs': b'x\x9c\xcb())(\xb6\xd2\xd7\xcfH\xcdL\xca\xaf\xd0+\xcd\xcb\xd4\x052SRs\x92R\x8b\xd2\xf5RR\xf5\xd3\xf4\x93\x93\x13-\xcc\x0c-\x93\xcd,M\xd2LLL\x12\x93\xccM,\xf5\xedSrl\r\x01\x97\x9a\x13\xd2',
-                  'label_grs_surface': b'x\x9c\xcb())(\xb6\xd2\xd7\xcfH\xcdL\xca\xaf\xd0+\xcd\xcb\xd4\x052SRs\x92R\x8b\xd2\xf5RR\xf5\xd3\xf4\x8d\x8c\x93\xcd-\x93\x12S\x92\x92-SM\xcc\xd2L-\x8dL\x8c\xf4\xedSrl\r\x01\x9a<\x13\xfc',
-                  'label_grs_funiculum': b'x\x9c\xcb())(\xb6\xd2\xd7\xcfH\xcdL\xca\xaf\xd0+\xcd\xcb\xd4\x052SRs\x92R\x8b\xd2\xf5RR\xf5\xd3\xf4\x13\x8d\xd2\x8c-\r\xcc\x93SSSLL\x12-\xcd,L,\x0c\xf4\xedSrl\r\x01\x97\xc1\x13\xcd',
-                  'es_trivial_grs': b'x\x9c\xcb())(\xb6\xd2\xd7\xcfH\xcdL\xca\xaf\xd0+\xcd\xcb\xd4\x052SRs\x92R\x8b\xd2\xf5RR\xf5\xd3\xf4-\x12M\x8d\xcd\x0c\x8d\x8c\x92MM\x92L\x12\x8d\xd2\x12\r\xcd\x93\xf4\xedSrl\r\x01\x90Q\x13\xb6',
-                  'es_pca_grs': b'x\x9c\xcb())(\xb6\xd2\xd7\xcfH\xcdL\xca\xaf\xd0+\xcd\xcb\xd4\x052SRs\x92R\x8b\xd2\xf5RR\xf5\xd3\xf4\r\xcd\x92\r\x13\x8dS-\xd3RL\x0cLRS\xcc-\x93L,\xf4\xedSrl\r\x01\x97\xc0\x13\xfa'
-                  }
+urls = {'trivial_grs': 'https://heibox.uni-heidelberg.de/f/cca8619c694f444ab749/?dl=1',
+        'label_grs_surface': 'https://heibox.uni-heidelberg.de/f/23c79badbc9e46f59242/?dl=1',
+        'label_grs_funiculus': 'https://heibox.uni-heidelberg.de/f/6aa6e44ab0c640478d4c/?dl=1',
+        'es_trivial_grs': 'https://heibox.uni-heidelberg.de/f/8a536122c54b4a2fa17b/?dl=1',
+        'es_pca_grs': 'https://heibox.uni-heidelberg.de/f/16c1a3e9fd404ed79b48/?dl=1'
+        }

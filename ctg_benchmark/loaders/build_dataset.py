@@ -1,6 +1,6 @@
 import csv
 import glob
-import os.path
+import requests
 from dataclasses import dataclass
 from typing import Union, List
 
@@ -12,7 +12,7 @@ import zipfile
 import os
 from torch_geometric.data import Data
 
-from ctg_benchmark import default_dataset_file_list, anonymous_urls
+from ctg_benchmark import default_dataset_file_list, urls
 from ctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
 from ctg_benchmark.transforms.basics import compute_to_torch_tensor
 from ctg_benchmark.transforms.transforms import TransformFactory
@@ -228,16 +228,19 @@ def _un_zip(file_path, root):
         zip_f.extractall(path=root)
 
 
+def request_dataset(url, out_file):
+    with requests.get(url, allow_redirects=True) as r:
+        with open(out_file, 'wb') as f:
+            f.write(r.content)
+
+
 def download_dataset(root,
                      dataset_name='es_pca_grs',
                      mode='zip'):
     os.makedirs(root, exist_ok=True)
-    # TODO to be removed upon acceptance
-    anonymous_url = anonymous_urls.get(dataset_name, None)
-    if anonymous_url is None:
+    url = urls.get(dataset_name, None)
+    if url is None:
         raise ValueError(f"Dataset {dataset_name} does not exist")
-
-    url = zlib.decompress(anonymous_url).decode()
 
     if mode == 'zip':
         ext = '.zip'
@@ -248,14 +251,7 @@ def download_dataset(root,
 
     file_path = os.path.join(root, f'{dataset_name}{ext}')
     print(f'Downloading {dataset_name} in {file_path}... this will take several minutes')
-    out = subprocess.run(['wget',
-                          '-q',  # TODO to be removed after release
-                          '-nc',
-                          '--trust-server-names',
-                          url,
-                          '-P', root
-                          ])
-    assert out.returncode == 0
+    request_dataset(url=url, out_file=file_path)
 
     print(f'Extracting {file_path}')
     if mode == 'zip':
