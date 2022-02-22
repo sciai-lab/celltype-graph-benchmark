@@ -23,7 +23,7 @@ requirements:
     - requests
     - pyyaml
     - pytorch
-    - pytorch-metrics
+    - torchmetrics
     - pytorch-geometric
 
 
