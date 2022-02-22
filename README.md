@@ -15,9 +15,9 @@ A new graph benchmark for node classification
 - torchmetrics
 
 ## Install CellTypeGraph Benchmark using conda
-- for cuda 11.1
+- for cuda 11.3
 ```
-conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchmark cudatoolkit=11.1
+conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchmark cudatoolkit=11.3
 ```
 - for cuda 10.2
 ```

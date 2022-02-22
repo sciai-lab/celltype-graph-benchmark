@@ -22,6 +22,7 @@ requirements:
     - h5py
     - requests
     - pyyaml
+    - numba
     - pytorch
     - torchmetrics
     - pytorch-geometric
