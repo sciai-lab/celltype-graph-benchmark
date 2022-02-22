@@ -1,5 +1,5 @@
 package:
-  name: pct
+  name: ctg_benchmark
   version: {{ RELEASE_VERSION }}
 
 source:
@@ -10,9 +10,6 @@ build:
   script: "pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
   number: 1
 
-  entry_points:
-    - plantct = plantseg.run_pipeline:main
-
 requirements:
   build:
     - python
@@ -21,20 +18,12 @@ requirements:
   run:
     - python
     - numpy
-    - scipy
-    - matplotlib
     - tqdm
     - h5py
     - requests
     - pyyaml
-    - scikit-image
-    - tifffile
-    - scikit-spatial
-    - scikit-imagew
-    - python-elf
     - pytorch
     - pytorch-metrics
-    - pytorch-lightning
     - pytorch-geometric
 
 

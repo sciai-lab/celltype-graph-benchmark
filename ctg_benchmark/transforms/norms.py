@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.stats import median_abs_deviation
 from typing import Tuple
 
 
@@ -19,15 +18,6 @@ def compute_zscore(feat,
     """Apply z-norm to an array"""
     std = np.std(feat) if std is None else 1
     feat = (feat - np.mean(feat)) / (std + eps)
-    return feat
-
-
-def compute_robust_zscore(feat: np.ndarray,
-                          mad: int = None,
-                          eps: float = 1e-16) -> np.ndarray:
-    """Apply robust z-norm an array"""
-    mad = 1 if mad is None else median_abs_deviation(feat)
-    feat = (feat - np.median(feat)) / (mad + eps)
     return feat
 
 
