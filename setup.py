@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
-exec(open('pctg_benchmark/__version__.py').read())
+exec(open('ctg_benchmark/__version__.py').read())
 setup(
-    name='pctg_benchmark',
+    name='ctg_benchmark',
     version=__version__,
     packages=find_packages(exclude=['tests']),
     include_package_data=True,

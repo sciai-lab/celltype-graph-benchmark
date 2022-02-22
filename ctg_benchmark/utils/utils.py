@@ -1,7 +1,7 @@
 import numpy as np
 from numba import njit
-from pctg_benchmark.utils.io import load_yaml
-from pctg_benchmark import pctg_basic_loader_config
+from ctg_benchmark.utils.io import load_yaml
+from ctg_benchmark import pctg_basic_loader_config
 
 
 def cantor_sym_depair(z):

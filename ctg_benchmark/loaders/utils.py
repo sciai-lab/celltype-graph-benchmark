@@ -1,10 +1,10 @@
 import numpy as np
 import torch
 
-from pctg_benchmark import gt_mapping
-from pctg_benchmark.transforms.transforms import setup_transforms
-from pctg_benchmark.transforms.graph import filter_label_from_edges_feature, filter_label_from_edges_ids
-from pctg_benchmark.transforms.graph import rectify_graph, remove_edges, remove_node
+from ctg_benchmark import gt_mapping
+from ctg_benchmark.transforms.transforms import setup_transforms
+from ctg_benchmark.transforms.graph import filter_label_from_edges_feature, filter_label_from_edges_ids
+from ctg_benchmark.transforms.graph import rectify_graph, remove_edges, remove_node
 from typing import Tuple
 
 

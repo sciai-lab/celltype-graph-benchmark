@@ -1,5 +1,5 @@
 import numpy as np
-from pctg_benchmark.utils.utils import create_cell_mapping
+from ctg_benchmark.utils.utils import create_cell_mapping
 
 
 def filter_label_from_edges_feature(edges_ids, edges_features, label=0):

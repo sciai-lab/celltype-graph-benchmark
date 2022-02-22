@@ -1,4 +1,4 @@
-from pctg_benchmark.transforms.utils import class_from_func, to_camel_case
+from ctg_benchmark.transforms.utils import class_from_func, to_camel_case
 from dataclasses import dataclass
 import importlib
 import copy
@@ -12,9 +12,9 @@ class TransformFactory:
     default_functional_name_key: str = 'compute_'
 
     def __post_init__(self):
-        transform_modules_default: List[str] = ['pctg_benchmark.transforms.basics',
-                                                'pctg_benchmark.transforms.norms',
-                                                'pctg_benchmark.transforms.sanity_check']
+        transform_modules_default: List[str] = ['ctg_benchmark.transforms.basics',
+                                                'ctg_benchmark.transforms.norms',
+                                                'ctg_benchmark.transforms.sanity_check']
         self.transform_modules = self.transform_modules if self.transform_modules is not None else []
         self.transform_modules += transform_modules_default
 

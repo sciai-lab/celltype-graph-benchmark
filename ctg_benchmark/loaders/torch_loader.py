@@ -3,12 +3,12 @@ from typing import Tuple
 from abc import ABC, abstractmethod
 import torch
 from torch_geometric.data import InMemoryDataset
-from pctg_benchmark.loaders.build_dataset import default_build_torch_geometric_data
-from pctg_benchmark.loaders.build_dataset import download_dataset
-from pctg_benchmark.loaders.build_dataset import build_cv_splits, build_std_splits
-from pctg_benchmark.utils.io import save_yaml, load_yaml
+from ctg_benchmark.loaders.build_dataset import default_build_torch_geometric_data
+from ctg_benchmark.loaders.build_dataset import download_dataset
+from ctg_benchmark.loaders.build_dataset import build_cv_splits, build_std_splits
+from ctg_benchmark.utils.io import save_yaml, load_yaml
 from torch_geometric.loader import DataLoader
-from pctg_benchmark.utils.utils import get_basic_loader_config
+from ctg_benchmark.utils.utils import get_basic_loader_config
 import tqdm
 
 

@@ -12,12 +12,12 @@ import zipfile
 import os
 from torch_geometric.data import Data
 
-from pctg_benchmark import default_dataset_file_list, anonymous_urls
-from pctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
-from pctg_benchmark.transforms.basics import compute_to_torch_tensor
-from pctg_benchmark.transforms.transforms import TransformFactory
-from pctg_benchmark.utils.io import open_full_stack
-from pctg_benchmark.utils.utils import get_basic_loader_config
+from ctg_benchmark import default_dataset_file_list, anonymous_urls
+from ctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
+from ctg_benchmark.transforms.basics import compute_to_torch_tensor
+from ctg_benchmark.transforms.transforms import TransformFactory
+from ctg_benchmark.utils.io import open_full_stack
+from ctg_benchmark.utils.utils import get_basic_loader_config
 
 
 @dataclass
