@@ -27,11 +27,11 @@ jobs:
           conda build -c rusty1s -c pytorch -c conda-forge conda-recipe
     - name: Install dependencies
       run: |
-        conda install rusty1s -c pytorch -c conda-forge --use-local ctg_benchmark
+        conda install -c rusty1s -c pytorch -c conda-forge --use-local ctg-benchmark
     - name: Deploy on conda
       if: ${{ startsWith( github.ref, 'refs/tags/') && success() }}
       env:
         ANACONDA_SECRET: ${{ secrets.ANACONDA_TOKEN }}
       run: |
         conda install -q anaconda-client
-        anaconda -t $ANACONDA_SECRET upload $CONDA/conda-bld/**/ctg_benchmark-*.tar.bz2
+        anaconda -t $ANACONDA_SECRET upload $CONDA/conda-bld/**/ctg-benchmark-*.tar.bz2

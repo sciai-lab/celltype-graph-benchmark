@@ -1,6 +1,7 @@
 package:
-  name: ctg_benchmark
-  version: {{ RELEASE_VERSION }}
+  name: ctg-benchmark
+  version: 0.0.1
+  #{{ RELEASE_VERSION }}
 
 source:
   path: ..
