@@ -12,6 +12,7 @@ dataset:
   node_features:
     # grs dependent
     - name: com_grs
+      transform: coordinate
       pre_transform:
         - name: Zscore
         - name: ToTorchTensor

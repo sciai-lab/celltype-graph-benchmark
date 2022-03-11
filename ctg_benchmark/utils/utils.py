@@ -1,12 +1,13 @@
 import numpy as np
+import numpy.typing as npt
 from numba import njit
 from ctg_benchmark.utils.io import load_yaml
 from ctg_benchmark import ctg_basic_loader_config
 
 
 def cantor_sym_depair(z):
-    w = np.floor((np.sqrt(8 * z + 1) - 1)/2)
-    t = (w**2 + w) / 2
+    w = np.floor((np.sqrt(8 * z + 1) - 1) / 2)
+    t = (w ** 2 + w) / 2
     y = int(z - t)
     x = int(w - y)
     return min(x, y), max(x, y)
@@ -56,3 +57,4 @@ def get_basic_loader_config(key: str = None):
     config = load_yaml(ctg_basic_loader_config)
     config = config.get(key) if key is not None else config
     return config
+

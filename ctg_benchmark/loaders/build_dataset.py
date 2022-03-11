@@ -13,7 +13,7 @@ import os
 from torch_geometric.data import Data
 
 from ctg_benchmark import default_dataset_file_list, urls
-from ctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels
+from ctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels, get_grs
 from ctg_benchmark.transforms.basics import compute_to_torch_tensor
 from ctg_benchmark.transforms.transforms import TransformFactory
 from ctg_benchmark.utils.io import open_full_stack
@@ -58,18 +58,18 @@ def default_build_torch_geometric_data(data_file_path: str,
     # nodes feat
     node_features, node_slices = collect_features(stack.get(key_config.node_features_key),
                                                   list_configs=key_config.node_features_config,
-                                                  transfrom_factory=default_factory)
+                                                  transform_factory=default_factory)
 
     # edges feat
     edges_features, edges_slices = collect_features(stack.get(key_config.edges_features_key),
                                                     list_configs=key_config.edges_features_config,
-                                                    transfrom_factory=default_factory)
+                                                    transform_factory=default_factory)
 
     # pos feat
     if key_config.pos_features_config is not None:
         pos_features, pos_slices = collect_features(stack.get(key_config.pos_features_key),
                                                     list_configs=key_config.pos_features_config,
-                                                    transfrom_factory=default_factory)
+                                                    transform_factory=default_factory)
     else:
         pos_features, pos_slices = None, None
 
@@ -87,10 +87,16 @@ def default_build_torch_geometric_data(data_file_path: str,
     if len(nodes_to_ignore) > 0:
         print("Masked nodes are not implemented")
 
+    # grs
+    origin, axis = get_grs(stack.get('attributes'))
+
     node_ids = compute_to_torch_tensor(node_ids, data_type='int')
     node_labels = compute_to_torch_tensor(node_labels, data_type='int')
     edges_ids = compute_to_torch_tensor(edges_ids, data_type='int').T
     edges_labels = compute_to_torch_tensor(edges_labels, data_type='int')
+
+    origin = compute_to_torch_tensor(origin, data_type='float')
+    axis = compute_to_torch_tensor(axis, data_type='float')
 
     # build torch_geometric Data obj
     graph_data = Data(x=node_features,
@@ -98,6 +104,8 @@ def default_build_torch_geometric_data(data_file_path: str,
                       y=node_labels,
                       pos=pos_features,
                       pos_slices=pos_slices,
+                      origin=origin,
+                      axis=axis,
                       file_path=data_file_path,
                       metadata=meta,
                       node_ids=node_ids,
@@ -235,7 +243,7 @@ def request_dataset(url, out_file):
 
 
 def download_dataset(root,
-                     dataset_name='es_pca_grs',
+                     dataset_name='label_grs_surface',
                      mode='zip'):
     os.makedirs(root, exist_ok=True)
     url = urls.get(dataset_name, None)
@@ -264,3 +272,7 @@ def download_dataset(root,
     print(f'Deleting {file_path}')
     out = subprocess.run(['rm', file_path])
     assert out.returncode == 0
+
+
+def change_base_dataset():
+    pass

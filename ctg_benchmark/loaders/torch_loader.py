@@ -180,7 +180,7 @@ class CTGSimpleSplit(CTG):
         ratio: ratio between train, test, and validation
         seed: random seed, to ensure reproducibility of the splits
         phase: define if the dataset is the test, train or val split
-        raw_transform_config: single features transfrom to be applied before creating the torch_geometric data object
+        raw_transform_config: single features transform to be applied before creating the torch_geometric data object
         grs: Global reference systems
         force_process: force re-processing of features
         file_list_path: list of dataset raw stacks

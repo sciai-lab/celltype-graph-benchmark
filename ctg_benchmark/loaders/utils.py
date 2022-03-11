@@ -25,12 +25,12 @@ def concatenate_features(list_feat):
         raise ValueError("Features must be either all numpy arrays or all torch tensors")
 
 
-def collect_features(features_dict, list_configs, transfrom_factory=None):
+def collect_features(features_dict, list_configs, transform_factory=None):
     list_feat, list_slice, current = [], [], 0
     for i, item in enumerate(list_configs):
         feat = features_dict[item['name']]
         if 'pre_transform' in item:
-            transform = setup_transforms(item['pre_transform'], transfrom_factory=transfrom_factory)
+            transform = setup_transforms(item['pre_transform'], transfrom_factory=transform_factory)
             feat = transform(feat)
         list_feat.append(feat)
 
@@ -95,3 +95,9 @@ def map_nodes_labels(nodes_label):
         else:
             mapped_labels[i] = new_label
     return mapped_labels, nodes_to_mask
+
+
+def get_grs(attributes):
+    origin = attributes.get('global_reference_system_origin', np.zeros(3))
+    axis = attributes.get('global_reference_system_axis', np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
+    return origin, axis
