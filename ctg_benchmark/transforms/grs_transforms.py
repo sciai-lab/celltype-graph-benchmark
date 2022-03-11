@@ -19,11 +19,13 @@ def torch_inv_transform_coordinates(points_coo: torch.Tensor,
     points_coo = points_coo + origin
     return points_coo
 
+
 def torch_scale_points(points_coo: torch.Tensor,
                        scaling: torch.Tensor,
                        reverse: bool = False) -> torch.Tensor:
     scaling = 1 / scaling if reverse else scaling
     return points_coo * scaling
+
 
 def torch_vectors_to_orientation(vectors_array: torch.Tensor) -> torch.Tensor:
     out_orientation_vectors_array = torch.zeros(vectors_array.shape[0], 6)
@@ -33,6 +35,7 @@ def torch_vectors_to_orientation(vectors_array: torch.Tensor) -> torch.Tensor:
     out_orientation_vectors_array[:, 4] = vectors_array[:, 1] * vectors_array[:, 2]
     out_orientation_vectors_array[:, 5] = vectors_array[:, 2] * vectors_array[:, 0]
     return out_orientation_vectors_array
+
 
 def torch_orientations_to_vectors(orientation_vectors_array: torch.Tensor) -> torch.Tensor:
     out_vectors_array = torch.zeros((orientation_vectors_array.shape[0], 3))
@@ -62,7 +65,6 @@ class TorchBasisTransformer:
         return self.change_coo_basis(points_coo, self.new_axis, new_origin=self.origin)
 
     def change_orientation_basis(self, points_coo: torch.Tensor, *args, **kwarg) -> torch.Tensor:
-
         new_points = torch_orientations_to_vectors(orientation_vectors_array=points_coo)
 
         new_points = self.change_coo_basis(new_points, self.new_axis, new_origin=self.origin)

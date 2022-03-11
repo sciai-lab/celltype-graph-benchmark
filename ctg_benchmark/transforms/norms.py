@@ -31,6 +31,6 @@ def compute_range_scale(feat: np.ndarray,
 
 
 def compute_to_unit_vector(feat: np.ndarray, eps: float = 1e-16) -> np.ndarray:
-    norm = np.sqrt(np.sum(feat, axis=1) ** 2)[:, None]
+    norm = np.sqrt(np.sum(feat**2, axis=1))[:, None]
     feat /= (norm + eps)
     return feat
