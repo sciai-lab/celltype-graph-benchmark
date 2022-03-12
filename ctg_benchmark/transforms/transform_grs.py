@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.typing as npt
-from plantcelltype.features.cell_vector_features import to_unit_vector
+from ctg_benchmark.transforms.norms import compute_to_unit_vector
 
 
 def transform_coordinates(points_coo: npt.ArrayLike,
@@ -133,7 +133,7 @@ def change_basis_cell_features(cell_features, base_transformer):
 
         elif key == 'com_proj_grs':
             new_feat = base_transformer.change_coo_basis(cell_features['com_grs'])
-            new_feat = to_unit_vector(new_feat)
+            new_feat = compute_to_unit_vector(new_feat)
             new_feat = new_feat.dot(base_transformer.new_axis)
         else:
             raise ValueError
@@ -213,6 +213,21 @@ def change_fullstack_basis(stack, new_axis, new_origin):
         new_stack[key] = change_samples(stack[key], bt)
 
     return new_stack
+
+
+def generate_random_basis(stack):
+    origin = stack['attributes']['global_reference_system_origin']
+    axis1 = np.random.randn(3)
+    axis1 = axis1 / compute_to_unit_vector(axis1)
+
+    axis2 = np.random.randn(3)
+    axis2 = axis2 / compute_to_unit_vector(axis2)
+    axis2 = np.cross(axis1, axis2)
+
+    axis3 = np.cross(axis1, axis1)
+    axis = np.array([axis1, axis2, axis3])
+
+    return change_fullstack_basis(stack, new_axis=axis, new_origin=origin)
 
 
 def generate_all_grs_stacks(stack):

@@ -222,7 +222,7 @@ def get_split_loaders(root,
                       raw_transform_config: dict = None,
                       grs: Tuple[str] = ('label_grs_surface',),
                       force_process: bool = False,
-                      **loaderkwargs) -> DataLoader:
+                      **loaderkwargs) -> dict:
     """
     Returns a simple split DataLoader for the CellTypeGraph Benchmark
     Parameters
@@ -269,7 +269,7 @@ def get_cross_validation_loaders(root,
                                  raw_transform_config: dict = None,
                                  grs: Tuple[str] = ('label_grs_surface',),
                                  force_process: bool = False,
-                                 **loaderkwargs) -> DataLoader:
+                                 **loaderkwargs) -> dict:
     """
     Returns a n-fold cross validation split DataLoader for the CellTypeGraph Benchmark
     Parameters
