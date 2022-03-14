@@ -1,4 +1,5 @@
-from torchmetrics import Accuracy, Precision, Recall, F1
+from torchmetrics import Accuracy, Precision, Recall
+from torchmetrics.classification.f_beta import F1Score
 from torchmetrics.functional import dice_score
 from torch import Tensor
 import torch
@@ -34,6 +35,7 @@ class Dice:
     """
     Wrapper around torchmetric.functional.dice_score
     """
+
     def __init__(self):
         self.dice = dice_score
 
@@ -72,10 +74,10 @@ class NodeClassificationMetrics:
                         'recall_class': Recall(num_classes=self.num_classes,
                                                average=None,
                                                ignore_index=self.ignore_index),
-                        'f1_micro': F1(average='micro', ignore_index=self.ignore_index),
-                        'f1_class': F1(num_classes=self.num_classes,
-                                       average=None,
-                                       ignore_index=self.ignore_index),
+                        'f1_micro': F1Score(average='micro', ignore_index=self.ignore_index),
+                        'f1_class': F1Score(num_classes=self.num_classes,
+                                            average=None,
+                                            ignore_index=self.ignore_index),
                         'dice': Dice(),
                         }
 
