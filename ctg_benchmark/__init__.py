@@ -30,10 +30,4 @@ resources_dir = 'resources'
 ctg_basic_loader_config = os.path.join(ctg_global_path, resources_dir, 'loader_base_config.yaml')
 default_dataset_file_list = os.path.join(ctg_global_path, resources_dir, 'list_data.csv')
 
-# TODO path need to be decoded upon acceptance
-urls = {'trivial_grs': 'https://heibox.uni-heidelberg.de/f/cca8619c694f444ab749/?dl=1',
-        'label_grs_surface': 'https://heibox.uni-heidelberg.de/f/23c79badbc9e46f59242/?dl=1',
-        'label_grs_funiculus': 'https://heibox.uni-heidelberg.de/f/6aa6e44ab0c640478d4c/?dl=1',
-        'es_trivial_grs': 'https://heibox.uni-heidelberg.de/f/8a536122c54b4a2fa17b/?dl=1',
-        'es_pca_grs': 'https://heibox.uni-heidelberg.de/f/16c1a3e9fd404ed79b48/?dl=1'
-        }
+urls = {'label_grs_surface': 'https://heibox.uni-heidelberg.de/f/23c79badbc9e46f59242/?dl=1'}

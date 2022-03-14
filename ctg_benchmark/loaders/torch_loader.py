@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import torch
 from torch_geometric.data import InMemoryDataset
 from ctg_benchmark.loaders.build_dataset import default_build_torch_geometric_data
-from ctg_benchmark.loaders.build_dataset import download_dataset
+from ctg_benchmark.loaders.build_dataset import build_dataset
 from ctg_benchmark.loaders.build_dataset import build_cv_splits, build_std_splits
 from ctg_benchmark.utils.io import save_yaml, load_yaml
 from torch_geometric.loader import DataLoader
@@ -59,7 +59,7 @@ class CTG(InMemoryDataset, ABC):
         for _grs in grs:
             grs_raw_dir = os.path.join(raw_path, _grs)
             if not os.path.isdir(grs_raw_dir):
-                download_dataset(raw_path, dataset_name=_grs)
+                build_dataset(raw_path, dataset_name=_grs)
 
     def download(self):
         pass

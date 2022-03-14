@@ -1,5 +1,5 @@
 import os
-
+import numpy as np
 import h5py
 import yaml
 
@@ -36,7 +36,6 @@ def _update_dict(template_dict, up_dict):
 
 
 def load_yaml(config_path):
-
     def join(loader, node):
         seq = loader.construct_sequence(node)
         return ''.join([str(i) for i in seq])
@@ -70,3 +69,40 @@ def load_yaml(config_path):
 def save_yaml(config, path):
     with open(path, "w") as f:
         yaml.dump(config, f)
+
+
+def export_full_stack(path, stack):
+    for key, value in stack.items():
+        if isinstance(value, dict):
+            for group_key, group_value in value.items():
+                if key == "attributes":
+                    create_h5_attrs(path, group_value, group_key)
+                else:
+                    create_h5(path, group_value, key=f"{key}/{group_key}", voxel_size=None)
+
+        elif isinstance(value, np.ndarray):
+            if value.ndim == 3:
+                voxel_size = stack['attributes'].get('element_size_um', [1.0, 1.0, 1.0])
+            else:
+                voxel_size = None
+            create_h5(path, value, key=key, voxel_size=voxel_size)
+
+
+def create_h5(path, stack, key, voxel_size=(1.0, 1.0, 1.0), mode='a'):
+    del_h5_key(path, key)
+    with h5py.File(path, mode) as f:
+        f.create_dataset(key, data=stack, compression='gzip')
+        # save voxel_size
+        if voxel_size is not None:
+            f[key].attrs['element_size_um'] = voxel_size
+
+
+def create_h5_attrs(path, value, key, mode='a'):
+    with h5py.File(path, mode) as f:
+        f.attrs[key] = value
+
+
+def del_h5_key(path, key, mode='a'):
+    with h5py.File(path, mode) as f:
+        if key in f:
+            del f[key]

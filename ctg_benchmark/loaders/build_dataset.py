@@ -10,14 +10,18 @@ import subprocess
 import tarfile
 import zipfile
 import os
+
+import tqdm
 from torch_geometric.data import Data
 
 from ctg_benchmark import default_dataset_file_list, urls
 from ctg_benchmark.loaders.utils import collect_features, graph_preprocessing, map_nodes_labels, get_grs
 from ctg_benchmark.transforms.basics import compute_to_torch_tensor
 from ctg_benchmark.transforms.transforms import TransformFactory
-from ctg_benchmark.utils.io import open_full_stack
+from ctg_benchmark.transforms.transform_grs import change_fullstack_basis
+from ctg_benchmark.utils.io import open_full_stack, export_full_stack
 from ctg_benchmark.utils.utils import get_basic_loader_config
+import pathlib
 
 
 @dataclass
@@ -274,5 +278,32 @@ def download_dataset(root,
     assert out.returncode == 0
 
 
-def change_base_dataset():
-    pass
+def build_new_grs(root, dataset_name, reference_dataset='label_grs_surface'):
+    print(f'Transforming {reference_dataset} in {dataset_name}... ')
+    axis_name = f'{dataset_name}_axis'
+    origin_name = f'{dataset_name}_origin'
+
+    parent = pathlib.Path(root)
+    reference_dataset = parent / reference_dataset
+    all_files = list(reference_dataset.glob('**/*.h5'))
+    for file_path in tqdm.tqdm(all_files):
+        stack = open_full_stack(file_path)
+
+        new_axis = stack['grs'][axis_name]
+        new_origin = stack['grs'][origin_name]
+        new_stack = change_fullstack_basis(stack, new_axis=new_axis, new_origin=new_origin)
+
+        new_path = parent / dataset_name / file_path.parent.name / file_path.name
+        new_path.parent.mkdir(exist_ok=True, parents=True)
+        export_full_stack(new_path, new_stack)
+
+
+def build_dataset(root, dataset_name='label_grs_surface', reference_dataset='label_grs_surface'):
+    reference_path = os.path.join(root, reference_dataset)
+    if not os.path.isdir(reference_path):
+        download_dataset(root, reference_dataset)
+
+    dataset_path = os.path.join(root, dataset_name)
+    if not os.path.isdir(dataset_path):
+        build_new_grs(root, dataset_name, reference_dataset=reference_dataset)
+

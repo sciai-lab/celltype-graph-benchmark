@@ -30,14 +30,14 @@ class TransformFactory:
 default_factory = TransformFactory()
 
 
-def setup_transforms(transforms_list, transfrom_factory: TransformFactory = None) -> Compose:
-    transfrom_factory = transfrom_factory if transfrom_factory is not None else default_factory
+def setup_transforms(transforms_list, transform_factory: TransformFactory = None) -> Compose:
+    transform_factory = transform_factory if transform_factory is not None else default_factory
     transforms = []
     for feat_config in transforms_list:
         _feat_config = copy.copy(feat_config)
         name = _feat_config['name']
-        if isinstance(name, str) and hasattr(transfrom_factory, name):
-            transform_class = transfrom_factory.__getattribute__(name)
+        if isinstance(name, str) and hasattr(transform_factory, name):
+            transform_class = transform_factory.__getattribute__(name)
 
         elif hasattr(name, '__call__'):
             transform_class = name

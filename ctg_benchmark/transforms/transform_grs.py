@@ -195,15 +195,16 @@ def change_fullstack_basis(stack, new_axis, new_origin):
     origin = stack['attributes']['global_reference_system_origin']
     bt = BasisTransformer(origin=origin, axis=axis, new_origin=new_origin, new_axis=new_axis)
 
-    new_stack = {key: stack[key].copy() for key in ['attributes',
-                                                    'cell_ids',
-                                                    'cell_labels',
-                                                    'edges_ids',
-                                                    'edges_labels',
-                                                    'grs',
-                                                    'labels',
-                                                    'rag_boundaries',
-                                                    'segmentation']}
+    keys_to_copy = [key for key in ['attributes',
+                                    'cell_ids',
+                                    'cell_labels',
+                                    'edges_ids',
+                                    'edges_labels',
+                                    'grs',
+                                    'labels',
+                                    'rag_boundaries',
+                                    'segmentation'] if key in stack.keys()]
+    new_stack = {key: stack[key].copy() for key in keys_to_copy}
     new_stack['attributes']['global_reference_system_axis'] = new_axis.copy()
     new_stack['attributes']['global_reference_system_origin'] = new_origin.copy()
 
@@ -242,5 +243,3 @@ def generate_all_grs_stacks(stack):
         dict_new_stacks[name] = change_fullstack_basis(stack, new_axis=new_axis, new_origin=new_origin)
 
     return dict_new_stacks
-
-

@@ -30,7 +30,7 @@ def collect_features(features_dict, list_configs, transform_factory=None):
     for i, item in enumerate(list_configs):
         feat = features_dict[item['name']]
         if 'pre_transform' in item:
-            transform = setup_transforms(item['pre_transform'], transfrom_factory=transform_factory)
+            transform = setup_transforms(item['pre_transform'], transform_factory=transform_factory)
             feat = transform(feat)
         list_feat.append(feat)
 
