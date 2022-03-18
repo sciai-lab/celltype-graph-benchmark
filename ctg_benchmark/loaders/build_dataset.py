@@ -306,4 +306,3 @@ def build_dataset(root, dataset_name='label_grs_surface', reference_dataset='lab
     dataset_path = os.path.join(root, dataset_name)
     if not os.path.isdir(dataset_path):
         build_new_grs(root, dataset_name, reference_dataset=reference_dataset)
-

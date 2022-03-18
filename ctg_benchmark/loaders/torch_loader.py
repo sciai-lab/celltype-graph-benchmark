@@ -241,6 +241,7 @@ def get_split_loaders(root,
     """
     loaders = {'train': None, 'val': None, 'test': None}
     for mode in loaders:
+        transform = transform if mode == 'train' else None
         mode_dataset = CTGSimpleSplit(root=root,
                                       phase=mode,
                                       transform=transform,
@@ -280,7 +281,7 @@ def get_cross_validation_loaders(root,
     transform: train time transformation
     pre_transform: build time data processing
     seed: random seed, to ensure reproducibility of the splits
-    raw_transform_config: dictionary detailing what features to load and what processing applying to the them
+    raw_transform_config: dictionary detailing what features to load and what processing applying to each feature
     grs: Global reference systems
     number_splits: number of cross validation splits, default 5
     force_process: force re-processing of features
@@ -291,6 +292,7 @@ def get_cross_validation_loaders(root,
     for split in range(number_splits):
         loaders = {'train': None, 'val': None}
         for mode in loaders:
+            transform = transform if mode == 'train' else None
             mode_dataset = CTGCrossValidationSplit(root=root,
                                                    split=split,
                                                    phase=mode,

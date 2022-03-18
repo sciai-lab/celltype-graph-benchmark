@@ -1,4 +1,6 @@
 import numpy as np
+from torch_geometric.data import Data
+from torch_geometric.utils import dropout_adj
 from ctg_benchmark.utils.utils import create_cell_mapping
 
 
@@ -50,3 +52,12 @@ def remove_node(cell_ids, edges_ids,
 
     cell_ids, edges_ids = rectify_graph(cell_ids, edges_ids)
     return cell_ids, edges_ids, cell_features, edges_features
+
+
+class RandomAdjDropout:
+    def __init__(self, p: float = 0.05):
+        self.p = p
+
+    def __call__(self, data: Data) -> Data:
+        data.edge_index, data.edge_attr = dropout_adj(data.edge_index, data.edge_attr, p=self.p)
+        return data

@@ -216,8 +216,11 @@ def change_fullstack_basis(stack, new_axis, new_origin):
     return new_stack
 
 
-def generate_random_basis(stack):
-    origin = stack['attributes']['global_reference_system_origin']
+def change_fullstack_to_random_basis(stack, random_origin=False):
+    if random_origin:
+        origin = np.random.randint()
+    else:
+        origin = stack['attributes']['global_reference_system_origin']
     axis1 = np.random.randn(3)
     axis1 = axis1 / compute_to_unit_vector(axis1)
 
@@ -231,7 +234,7 @@ def generate_random_basis(stack):
     return change_fullstack_basis(stack, new_axis=axis, new_origin=origin)
 
 
-def generate_all_grs_stacks(stack):
+def generate_all_fullstack_basis(stack):
     dict_new_stacks = {}
     for axis_key, origin_key in [('es_pca_grs_axis', 'es_pca_grs_origin'),
                                  ('es_trivial_grs_axis', 'es_trivial_grs_origin'),
