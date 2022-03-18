@@ -54,6 +54,6 @@ class RandomNormalNoise:
         noise = self.noise_sigma * torch.randn_like(data.x)
         data.x = data.x + noise
 
-        noise = self.noise_sigma * torch.randn_like(data.data.edge_attr)
+        noise = self.noise_sigma * torch.randn_like(data.edge_attr)
         data.edge_attr = data.edge_attr + noise
         return data
