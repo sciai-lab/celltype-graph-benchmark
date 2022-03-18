@@ -47,7 +47,7 @@ def compute_to_torch_tensor(feat: np.ndarray,
 
 
 class RandomNormalNoise:
-    def __init__(self, noise_sigma: int = 0.1):
+    def __init__(self, noise_sigma: float = 0.1):
         self.noise_sigma = noise_sigma
 
     def __call__(self, data: Data) -> Data:
