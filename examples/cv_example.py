@@ -42,9 +42,11 @@ def main():
             # TODO your predictor goes here
             pred = mock_expert_predictor(val_batch)
 
-            result = eval_metrics.compute_metrics(pred, val_batch['y'])
-            acc = result['accuracy_micro']
-            acc_class, _ = aggregate_class(result['accuracy_class'])
+            # results is a dictionary containing a large number of classification metrics
+            results = eval_metrics.compute_metrics(pred, val_batch['y'])
+            acc = results['accuracy_micro']
+            # aggregate class average the single class accuracy and ignores the embryo sack class (7)
+            acc_class, _ = aggregate_class(results['accuracy_class'], index=7)
 
             accuracy_records.append(acc)
             accuracy_class_records.append(acc_class)

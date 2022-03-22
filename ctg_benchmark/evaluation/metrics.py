@@ -10,8 +10,8 @@ import numpy as np
 
 def aggregate_class(score, index=None, return_num_nan=True):
     """
-    This functions compute the means over the class accuracy.
-    Moreover it will remove index (like 7, es) and ignore nan.
+    This function compute the means over the class accuracy.
+    Moreover, it will remove index (like 7, es) and ignore nan.
     """
     score = np.array(score)
 
@@ -54,6 +54,9 @@ class Dice:
 
 @dataclass
 class NodeClassificationMetrics:
+    """
+    Simple container to compute all Node Classification Metrics
+    """
     num_classes: int
     ignore_index: Optional[int] = None
 
