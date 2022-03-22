@@ -10,9 +10,13 @@ from ctg_benchmark.utils.io import save_yaml, load_yaml
 from torch_geometric.loader import DataLoader
 from ctg_benchmark.utils.utils import get_basic_loader_config
 import tqdm
+from typing import Callable, Tuple
 
 
 class CTG(InMemoryDataset, ABC):
+    """ Abstract CellTypeGraph Dataset"""
+    in_edges_attr: int = None
+    in_features: int = None
 
     def __init__(self, root,
                  raw_file_metas: list,
@@ -25,8 +29,6 @@ class CTG(InMemoryDataset, ABC):
         self.raw_file_metas = raw_file_metas
         self._raw_file_names = [meta['path'] for meta in raw_file_metas]
         self._processed_dir = processed_dir
-        self.in_edges_attr: int = None
-        self.in_features: int = None
         self.raw_transform_config = raw_transform_config
         self.raw_transform_config_path = os.path.join(processed_dir, 'raw_transform_config.yaml')
         os.makedirs(processed_dir, exist_ok=True)
@@ -126,7 +128,7 @@ class CTGCrossValidationSplit(CTG):
         split: split in use, must be between 0 and number_splits
         phase: must be on of [train, val, test]
         seed: random seed, to ensure reproducibility of the splits
-        raw_transform_config: dictionary detailing what features to load and what processing applying to the them
+        raw_transform_config: single features transform to be applied before creating the torch_geometric data object
         grs: Global reference systems
         number_splits: number of cross validation splits, default 5
         force_process: force re-processing of features
@@ -212,17 +214,17 @@ class CTGSimpleSplit(CTG):
         return raw_file_metas
 
 
-def get_split_loaders(root,
-                      batch_size=1,
-                      shuffle=True,
-                      transform=None,
-                      pre_transform=None,
-                      ratio: tuple = (0.6, 0.1, 0.3),
+def get_split_loaders(root: str,
+                      batch_size: int = 1,
+                      shuffle: bool = True,
+                      transform: Callable = None,
+                      pre_transform: Callable = None,
+                      ratio: Tuple[float, float, float] = (0.6, 0.1, 0.3),
                       seed: int = 0,
                       raw_transform_config: dict = None,
-                      grs: Tuple[str] = ('label_grs_surface',),
+                      grs: Tuple[str, ...] = ('label_grs_surface',),
                       force_process: bool = False,
-                      **loaderkwargs) -> dict:
+                      **loaderkwargs: dict) -> dict:
     """
     Returns a simple split DataLoader for the CellTypeGraph Benchmark
     Parameters
@@ -230,11 +232,11 @@ def get_split_loaders(root,
     root: root containing the dataset (if not present the dataset will be downloaded)
     batch_size: default 1
     shuffle: if true train data loader is going to be shuffled
-    transform: train time transformation
-    pre_transform: build time data processing
+    transform: add train time only transforms
+    pre_transform: add custom data transforms at test and validation time
     ratio: ratio between train, test, and validation
     seed: random seed, to ensure reproducibility of the splits
-    raw_transform_config: single features transfrom to be applied before creating the torch_geometric data object
+    raw_transform_config: single features transform to be applied before creating the torch_geometric data object
     grs: Global reference systems
     force_process: force re-processing of features
     loaderkwargs: torch_geometric.loader.DataLoader arguments
@@ -260,17 +262,17 @@ def get_split_loaders(root,
     return loaders
 
 
-def get_cross_validation_loaders(root,
-                                 batch_size=1,
-                                 shuffle=True,
-                                 transform=None,
-                                 pre_transform=None,
+def get_cross_validation_loaders(root: str,
+                                 batch_size: int = 1,
+                                 shuffle: bool = True,
+                                 transform: Callable = None,
+                                 pre_transform: Callable = None,
                                  number_splits: int = 5,
                                  seed: int = 0,
                                  raw_transform_config: dict = None,
-                                 grs: Tuple[str] = ('label_grs_surface',),
+                                 grs: Tuple[str, ...] = ('label_grs_surface',),
                                  force_process: bool = False,
-                                 **loaderkwargs) -> dict:
+                                 **loaderkwargs: dict) -> dict:
     """
     Returns a n-fold cross validation split DataLoader for the CellTypeGraph Benchmark
     Parameters
@@ -278,8 +280,8 @@ def get_cross_validation_loaders(root,
     root: root containing the dataset (if not present the dataset will be downloaded)
     batch_size: default 1
     shuffle: if true train data loader is going to be shuffled
-    transform: train time transformation
-    pre_transform: build time data processing
+    transform: add train time only transforms
+    pre_transform: add custom data transforms at test and validation time
     seed: random seed, to ensure reproducibility of the splits
     raw_transform_config: dictionary detailing what features to load and what processing applying to each feature
     grs: Global reference systems
@@ -312,4 +314,3 @@ def get_cross_validation_loaders(root,
 
         cv_loaders[split] = loaders
     return cv_loaders
-

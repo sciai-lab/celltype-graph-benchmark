@@ -1,3 +1,5 @@
+from ctg_benchmark.utils.io import open_full_stack, export_full_stack
+from ctg_benchmark.transforms.transform_grs import change_fullstack_basis
 from pathlib import Path
 import os
 
@@ -30,4 +32,6 @@ resources_dir = 'resources'
 ctg_basic_loader_config = os.path.join(ctg_global_path, resources_dir, 'loader_base_config.yaml')
 default_dataset_file_list = os.path.join(ctg_global_path, resources_dir, 'list_data.csv')
 
-urls = {'label_grs_surface': 'https://heibox.uni-heidelberg.de/f/23c79badbc9e46f59242/?dl=1'}
+urls = {'label_grs_surface': {'url': 'https://heibox.uni-heidelberg.de/f/23c79badbc9e46f59242/?dl=1',
+                              'md5sum': '7aa603f3d3cddbf766679d388076269b'}
+        }

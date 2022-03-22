@@ -44,16 +44,3 @@ def compute_to_torch_tensor(feat: np.ndarray,
     else:
         raise NotImplementedError
     return tensor_feat
-
-
-class RandomNormalNoise:
-    def __init__(self, noise_sigma: float = 0.1):
-        self.noise_sigma = noise_sigma
-
-    def __call__(self, data: Data) -> Data:
-        noise = self.noise_sigma * torch.randn_like(data.x)
-        data.x = data.x + noise
-
-        noise = self.noise_sigma * torch.randn_like(data.edge_attr)
-        data.edge_attr = data.edge_attr + noise
-        return data

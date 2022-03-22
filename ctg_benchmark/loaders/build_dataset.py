@@ -5,13 +5,12 @@ from dataclasses import dataclass
 from typing import Union, List
 
 import numpy as np
-import zlib
 import subprocess
-import tarfile
 import zipfile
 import os
 
 import tqdm
+import warnings
 from torch_geometric.data import Data
 
 from ctg_benchmark import default_dataset_file_list, urls
@@ -22,6 +21,7 @@ from ctg_benchmark.transforms.transform_grs import change_fullstack_basis
 from ctg_benchmark.utils.io import open_full_stack, export_full_stack
 from ctg_benchmark.utils.utils import get_basic_loader_config
 import pathlib
+import hashlib
 
 
 @dataclass
@@ -230,11 +230,6 @@ def build_std_splits(source_root: Union[str, List[str]],
     return splits
 
 
-def _un_tar(file_path, root):
-    with tarfile.open(file_path) as tar_f:
-        tar_f.extractall(path=root)
-
-
 def _un_zip(file_path, root):
     with zipfile.ZipFile(file_path) as zip_f:
         zip_f.extractall(path=root)
@@ -246,30 +241,38 @@ def request_dataset(url, out_file):
             f.write(r.content)
 
 
+def check_md5sum(file_path, reference_md5sum):
+    with open(file_path, 'rb') as f:
+        md5sum = hashlib.md5(f.read()).hexdigest()
+
+    if md5sum != reference_md5sum:
+        warnings.warn(f'Something went wrong during the dataset download. '
+                      f'{file_path} md5sum should be {reference_md5sum} but it is {md5sum}')
+
+
 def download_dataset(root,
                      dataset_name='label_grs_surface',
                      mode='zip'):
     os.makedirs(root, exist_ok=True)
-    url = urls.get(dataset_name, None)
-    if url is None:
+    dict_url = urls.get(dataset_name, None)
+    if dict_url is None:
         raise ValueError(f"Dataset {dataset_name} does not exist")
+
+    url, true_md5sum = dict_url['url'], dict_url['md5sum']
 
     if mode == 'zip':
         ext = '.zip'
-    elif mode == 'tar':
-        ext = '.tar.xz'
     else:
         raise NotImplementedError
 
     file_path = os.path.join(root, f'{dataset_name}{ext}')
-    print(f'Downloading {dataset_name} in {file_path}... this will take several minutes')
+    print(f'Downloading {dataset_name} in {file_path}... this can take several minutes')
     request_dataset(url=url, out_file=file_path)
+    check_md5sum(file_path, true_md5sum)
 
     print(f'Extracting {file_path}')
     if mode == 'zip':
         _un_zip(file_path, root)
-    elif mode == 'tar':
-        _un_tar(file_path, root)
     else:
         raise NotImplementedError
 
@@ -299,10 +302,12 @@ def build_new_grs(root, dataset_name, reference_dataset='label_grs_surface'):
 
 
 def build_dataset(root, dataset_name='label_grs_surface', reference_dataset='label_grs_surface'):
+    # check if reference dataset exist (if not download it)
     reference_path = os.path.join(root, reference_dataset)
     if not os.path.isdir(reference_path):
         download_dataset(root, reference_dataset)
 
+    # check if requested dataset exist (if not create it from reference)
     dataset_path = os.path.join(root, dataset_name)
     if not os.path.isdir(dataset_path):
         build_new_grs(root, dataset_name, reference_dataset=reference_dataset)
