@@ -1,18 +1,20 @@
 # CellTypeGraph Benchmark
 A new graph benchmark for node classification
 
-# Requirements
+## Requirements
 - Linux
 - Anaconda / miniconda
-
-# dependencies
+## Dependencies
 - python >= 3.8
+- numpy
+- tqdm
 - h5py
 - requests
-- pyaml
+- pyyaml
+- numba
 - pytorch
-- pytorch_geometric
 - torchmetrics
+- pytorch-geometric
 
 ## Install CellTypeGraph Benchmark using conda
 - for cuda 11.3
@@ -28,25 +30,32 @@ conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchma
 conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchmark cpuonly 
 ```
 
-## Minimal Example
-* create CellTypeGraph simple split loader: 
+## Usage Examples
+* create CellTypeGraph cross validation loader
+```python
+from ctg_benchmark.loaders.torch_loader import get_cross_validation_loaders
+loaders_dict = get_cross_validation_loaders(root='./ctg_data/')
 ```
+where `loaders_dict` is a dictionary that contains 5 tuple of training and validation data-loaders. 
+```python
+for split, loader_dict in loaders_dict.items():
+    train_loader = loader_dict['train'] 
+    val_loader = loader_dict['val']
+```
+
+
+* Alternatively for quicker experimentation's one can create a simples train/val/test split as: 
+```python
 from ctg_benchmark.loaders.torch_loader import get_split_loaders
 loader = get_split_loaders(root='./ctg_data/',)
 print(loader['train'], loader['val'], loader['test'])
 ```
 
-* create CellTypeGraph cross validation loader:
-```
-from ctg_benchmark.loaders.torch_loader import get_cross_validation_loaders
-loader = get_cross_validation_loaders(root='./ctg_data/',)
-for split, loader in loader.items():
-    print(split, loader['train'], loader['val'])
-```
-
-* Evaluate results:
-```
-from ctg_benchmark.evaluation.metrics import NodeClassificationMetrics
+* Simple evaluation: For evaluation `ctg_benchmark.evaluation.NodeClassificationMetrics` conveniently wraps several 
+metrics as implemented in`torchmetrics`. Single class results can be 
+aggregate by using `ctg_benchmark.evaluation.aggregate_class`.
+```python
+from ctg_benchmark.evaluation.metrics import NodeClassificationMetrics, aggregate_class
 eval_metrics = NodeClassificationMetrics(num_classes=9)
 
 predictions = torch.randint(9, (1000,))
@@ -57,3 +66,7 @@ class_average_accuracy, _ = aggregate_class(results['accuracy_class'], index=7)
 print(f"global accuracy: {results['accuracy_micro']: .3f}")
 print(f"class average accuracy: {class_average_accuracy: .3f}")
 ```
+
+* A simple GCN training example can be found [examples](examples/gcn_example.py)
+
+## Cite
