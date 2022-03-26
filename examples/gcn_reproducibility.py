@@ -2,37 +2,24 @@ from ctg_benchmark.loaders.torch_loader import get_cross_validation_loaders
 from ctg_benchmark.evaluation.metrics import NodeClassificationMetrics, aggregate_class
 import torch
 import numpy as np
-from tqdm import trange
 from torch_geometric.nn.models import GCN
-from torch.optim import Adam
-import torch.nn.functional as F
+import glob
+from collections import OrderedDict
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+base_path = f'./TgGCN_lr_1e-2_wd_1e-5_num_layers_2_hidden_feat_128_dropout_0.5/'
 
 
-def simple_trainer(trainer_loader):
+def load_GCN(split=0):
     model = GCN(in_channels=74, hidden_channels=128, num_layers=2, out_channels=9, dropout=0.5)
+
+    path = f'{base_path}/split{split}/version_0/checkpoints/best_acc*.ckpt'
+    path = glob.glob(path)[0]
+    _model = torch.load(path)
+    state_dict = _model['state_dict']
+    new_state_dict = OrderedDict([(key.replace('net.module.', ''), value) for key, value in state_dict.items()])
+    model.load_state_dict(new_state_dict)
     model = model.to(device)
-
-    optim = Adam(params=model.parameters(), lr=1e-2, weight_decay=1e-5)
-    t_range = trange(50, desc=f'Epoch: {0: 03d}, training loss: {0/len(trainer_loader): .2f}')
-    # basic training loop
-    for epoch in t_range:
-        loss_epoch = 0
-        for batch in trainer_loader:
-            optim.zero_grad()
-            batch = batch.to(device)
-            pred = model.forward(batch.x, batch.edge_index)
-            logits = torch.log_softmax(pred, 1)
-            loss = F.nll_loss(logits, batch.y)
-            loss.backward()
-
-            optim.step()
-
-            loss_epoch += loss.item()
-
-        t_range.set_description(f'Epoch: {epoch + 1: 03d}, training loss: {loss_epoch/len(trainer_loader): .2f}')
-        t_range.refresh()
     return model
 
 
@@ -68,7 +55,7 @@ def main():
     for split, split_loader in loader.items():
         training_loader, validation_loader = split_loader['train'], split_loader['val']
 
-        model = simple_trainer(training_loader)
+        model = load_GCN(split)
         split_accuracy_records, split_accuracy_class_records = validation(validation_loader, model)
         accuracy_records += split_accuracy_records
         accuracy_class_records += split_accuracy_class_records
