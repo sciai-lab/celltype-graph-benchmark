@@ -4,7 +4,8 @@ A new graph benchmark for node classification
 ## Requirements
 - Linux
 - Anaconda / miniconda
-## Dependencies
+
+### Dependencies
 - python >= 3.8
 - numpy
 - tqdm
@@ -15,6 +16,9 @@ A new graph benchmark for node classification
 - pytorch
 - torchmetrics
 - pytorch-geometric
+
+### Optional Dependencies (for running the examples):
+- class_resolver
 
 ## Install CellTypeGraph Benchmark using conda
 - for cuda 11.3
@@ -29,8 +33,10 @@ conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchma
 ```
 conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchmark cpuonly 
 ```
+# Simple training example
+* A simple GCN training example can be found in [examples](examples/gcn_example.py).
 
-## Usage Examples
+## Basic usage
 * create CellTypeGraph cross validation loader
 ```python
 from ctg_benchmark.loaders.torch_loader import get_cross_validation_loaders
@@ -67,6 +73,17 @@ print(f"global accuracy: {results['accuracy_micro']: .3f}")
 print(f"class average accuracy: {class_average_accuracy: .3f}")
 ```
 
-* A simple GCN training example can be found [examples](examples/gcn_example.py)
+## Advanced usage examples
+* Change default features and features processing
+* Load points samples
+* Add features
+* Manual download
+
+## Reproducibility 
+* To get details on the benchmark, run the following [script](examples/benchmark_overview.py)
+* To reproduce the GCN results checkout the following [script](examples/gcn_reproducibility.py)
+* To reproduce all baseline results, plots and additional experiments, checkout the 
+[plantcelltype](https://github.com/hci-unihd/plant-celltype) repository.
 
 ## Cite
+coming soon...

@@ -1,3 +1,10 @@
+"""
+In order to reproduce the baselines scores one need to:
+* Downloads `baseline_checkpoints.zip` from https://heibox.uni-heidelberg.de/published/celltypegraph-benchmark/
+and extract `TgGCN_lr_1e-2_wd_1e-5_num_layers_2_hidden_feat_128_dropout_0.5` here.
+(zip file check `md5sum: 82ea2e1cf3d0e9eee342938b7c583174`).
+"""
+
 from ctg_benchmark.loaders.torch_loader import get_cross_validation_loaders
 from ctg_benchmark.evaluation.metrics import NodeClassificationMetrics, aggregate_class
 import torch
@@ -10,7 +17,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 base_path = f'./TgGCN_lr_1e-2_wd_1e-5_num_layers_2_hidden_feat_128_dropout_0.5/'
 
 
-def load_GCN(split=0):
+def load_gcn(split=0):
     model = GCN(in_channels=74, hidden_channels=128, num_layers=2, out_channels=9, dropout=0.5)
 
     path = f'{base_path}/split{split}/version_0/checkpoints/best_acc*.ckpt'
@@ -55,7 +62,7 @@ def main():
     for split, split_loader in loader.items():
         training_loader, validation_loader = split_loader['train'], split_loader['val']
 
-        model = load_GCN(split)
+        model = load_gcn(split)
         split_accuracy_records, split_accuracy_class_records = validation(validation_loader, model)
         accuracy_records += split_accuracy_records
         accuracy_class_records += split_accuracy_class_records
