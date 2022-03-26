@@ -1,5 +1,9 @@
 # CellTypeGraph Benchmark
-A new graph benchmark for node classification
+![](/home/lcerrone/PycharmProjects/celltype-graph-benchmark/resources/overview.svg)
+
+CellTypeGraph is a new graph benchmark for node classification. The benchmark consist of 84 *Arabidopsis* 
+ovules segmentations, and the task is to classify each cell with its specific cell type. The  
+
 
 ## Requirements
 - Linux
@@ -33,7 +37,8 @@ conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchma
 ```
 conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchmark cpuonly 
 ```
-# Simple training example
+
+## Simple training example
 * A simple GCN training example can be found in [examples](examples/gcn_example.py).
 
 ## Basic usage
