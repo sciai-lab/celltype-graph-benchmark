@@ -1,5 +1,5 @@
 # CellTypeGraph Benchmark
-![](/home/lcerrone/PycharmProjects/celltype-graph-benchmark/resources/overview.svg)
+![](resources/overview.svg)
 
 CellTypeGraph is a new graph benchmark for node classification. The benchmark consist of 84 *Arabidopsis* 
 ovules segmentations, and the task is to classify each cell with its specific cell type. The  
