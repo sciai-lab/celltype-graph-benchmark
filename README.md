@@ -10,14 +10,16 @@ CellTypeGraph is a new graph benchmark for node classification.
 The benchmark is distilled from of 84 *Arabidopsis* ovules segmentations, 
 and the task is to classify each cell with its specific cell type.
 We represent each specimen as a graph, where each cell is a node and any two adjacent cells are connected with an edge.
-This python-package comes with a Pytorch DataLoader, and pre-computed node and edge features. But the latter can be fully 
-customized and modified.
+This python-package comes with a Pytorch DataLoader, and pre-computed node and edge features. But the latter can be 
+fully customized and modified.
 
 ### Evaluation
-In the package we also include evaluation code and examples.
+In the package we also include evaluation code and 
+[examples](https://github.com/hci-unihd/celltype-graph-benchmark/tree/main/examples).
 
 ### Results
-To see our most recent results check out the leadboard page in the repository wiki.
+To see our most recent results check out the 
+[leadboard](https://github.com/hci-unihd/celltype-graph-benchmark/wiki/Current-CellTypeGraph-leaderboard) page in the repository wiki.
 
 ## Requirements
 - Linux
@@ -25,7 +27,6 @@ To see our most recent results check out the leadboard page in the repository wi
 
 ### Dependencies
 - python >= 3.8
-- numpy
 - tqdm
 - h5py
 - requests
@@ -58,7 +59,7 @@ conda create -n ctg -c rusty1s -c pytorch -c conda-forge -c lcerrone ctg-benchma
 ## Basic usage
 * create CellTypeGraph cross validation loader
 ```python
-from ctg_benchmark.loaders.torch_loader import get_cross_validation_loaders
+from ctg_benchmark.loaders import get_cross_validation_loaders
 loaders_dict = get_cross_validation_loaders(root='./ctg_data/')
 ```
 where `loaders_dict` is a dictionary that contains 5 tuple of training and validation data-loaders. 
@@ -71,7 +72,7 @@ for split, loader_dict in loaders_dict.items():
 
 * Alternatively for quicker experimentation's one can create a simples train/val/test split as: 
 ```python
-from ctg_benchmark.loaders.torch_loader import get_split_loaders
+from ctg_benchmark.loaders import get_split_loaders
 loader = get_split_loaders(root='./ctg_data/',)
 print(loader['train'], loader['val'], loader['test'])
 ```
@@ -80,7 +81,7 @@ print(loader['train'], loader['val'], loader['test'])
 metrics as implemented in`torchmetrics`. Single class results can be 
 aggregate by using `ctg_benchmark.evaluation.aggregate_class`.
 ```python
-from ctg_benchmark.evaluation.metrics import NodeClassificationMetrics, aggregate_class
+from ctg_benchmark.evaluation import NodeClassificationMetrics, aggregate_class
 eval_metrics = NodeClassificationMetrics(num_classes=9)
 
 predictions = torch.randint(9, (1000,))
@@ -95,9 +96,12 @@ print(f"class average accuracy: {class_average_accuracy: .3f}")
 ## Advanced usage examples
 * Change default features, features processing or add new features:
 We did our best to make our CellTypeGraph benchmark flexible and easy to extend, since we compute several 
-incommensurable features, we needed to a way to select, and process every feature independently. 
-* Load points samples
-* Manual download
+incommensurable features, we needed to a way to select, and process every feature independently, for more details
+[see](https://github.com/hci-unihd/celltype-graph-benchmark/wiki/Change-default-features,-features-processing-or-add-new-features).
+* Load points samples, for more details 
+[see](https://github.com/hci-unihd/celltype-graph-benchmark/wiki/Load-points-samples).
+* Manual download, for more details 
+[see](https://github.com/hci-unihd/celltype-graph-benchmark/wiki/Load-points-samples).
 
 ## Reproducibility 
 * To get details on the benchmark, run the following [script](examples/benchmark_overview.py)
