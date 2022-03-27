@@ -1,5 +1,5 @@
 # CellTypeGraph Benchmark
-![](resources/overview.svg)
+![](resources/overview.png)
 
 CellTypeGraph is a new graph benchmark for node classification.
 
