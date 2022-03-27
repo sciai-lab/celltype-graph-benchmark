@@ -6,12 +6,12 @@ CellTypeGraph is a new graph benchmark for node classification.
 ## Benchmark Overview
 
 ### The dataset
-
 The benchmark is distilled from of 84 *Arabidopsis* ovules segmentations, 
 and the task is to classify each cell with its specific cell type.
 We represent each specimen as a graph, where each cell is a node and any two adjacent cells are connected with an edge.
 This python-package comes with a Pytorch DataLoader, and pre-computed node and edge features. But the latter can be 
-fully customized and modified.
+fully customized and modified. The source data for CellTypeGraph Benchmark can be also manually download from
+[zenodo.org](https://zenodo.org/record/6374104).
 
 ### Evaluation
 In the package we also include evaluation code and 
