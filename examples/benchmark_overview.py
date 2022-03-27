@@ -4,7 +4,7 @@ import torch
 import numpy as np
 
 
-def mock_expert_predictor(val_batch):
+def mock_predictor(val_batch):
     from ctg_benchmark.utils.io import open_full_stack
     from ctg_benchmark import gt_mapping
     """ Simple mock predictions module, load the experts annotations and uses it as predictions """
@@ -17,7 +17,7 @@ def mock_expert_predictor(val_batch):
     return pred
 
 
-def mock_trainer(trainer_loader):
+def mock_trainer(*args):
     # TODO to be implemented
     ...
 
@@ -32,15 +32,16 @@ def main():
     accuracy_records, accuracy_class_records = [], []
     num_edges, num_nodes = 0, 0
 
+    print("Running template cross-validation loop:")
     for split, split_loader in loader.items():
         training_loader, validation_loader = split_loader['train'], split_loader['val']
         # TODO your training procedure goes here
-        mock_trainer(training_loader)
+        mock_trainer(training_loader, validation_loader)
 
-        print(f'Cross validation split: {split + 1}/{len(loader)}')
+        print(f' Cross validation split: {split + 1}/{len(loader)}')
         for val_batch in validation_loader:
             # TODO your predictor goes here
-            pred = mock_expert_predictor(val_batch)
+            pred = mock_predictor(val_batch)
 
             # results is a dictionary containing a large number of classification metrics
             results = eval_metrics.compute_metrics(pred, val_batch['y'])
@@ -57,11 +58,14 @@ def main():
 
     # report results
     print('\nDataset statistics:')
-    print(f'#edges: {num_edges}, #nodes: {num_nodes}')
-    print(f'<edges>: {num_edges / 84:.1f}, <nodes>: {num_nodes / 84:.1f}')
+    print(f' #specimen {len(accuracy_records)}')
+    print(f' #features {val_batch.x.shape[-1]}, #edge features {val_batch.edge_attr.shape[-1]}')
+    print(f' #edges: {num_edges}, #nodes: {num_nodes}')
+    print(f' <#edges>: {num_edges // 84}, <#nodes>: {num_nodes // 84}')
+
     print(f'\nExpert performance:')
-    print(f'Accuracy {np.mean(accuracy_records):.3f} {np.std(accuracy_records):.3f}')
-    print(f'Class Accuracy {np.mean(accuracy_class_records):.3f} {np.std(accuracy_class_records):.3f}')
+    print(f' Accuracy {np.mean(accuracy_records):.3f} {np.std(accuracy_records):.3f}')
+    print(f' Class Accuracy {np.mean(accuracy_class_records):.3f} {np.std(accuracy_class_records):.3f}')
 
 
 if __name__ == '__main__':

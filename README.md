@@ -1,9 +1,23 @@
 # CellTypeGraph Benchmark
-![](/home/lcerrone/PycharmProjects/celltype-graph-benchmark/resources/overview.svg)
+![Alt text](/home/lcerrone/PycharmProjects/celltype-graph-benchmark/resources/overview.svg)
 
-CellTypeGraph is a new graph benchmark for node classification. The benchmark consist of 84 *Arabidopsis* 
-ovules segmentations, and the task is to classify each cell with its specific cell type. The  
+CellTypeGraph is a new graph benchmark for node classification.
 
+## Benchmark Overview
+
+### The dataset
+
+The benchmark is distilled from of 84 *Arabidopsis* ovules segmentations, 
+and the task is to classify each cell with its specific cell type.
+We represent each specimen as a graph, where each cell is a node and any two adjacent cells are connected with an edge.
+This python-package comes with a Pytorch DataLoader, and pre-computed node and edge features. But the latter can be fully 
+customized and modified.
+
+### Evaluation
+In the package we also include evaluation code and examples.
+
+### Results
+To see our most recent results check out the leadboard page in the repository wiki.
 
 ## Requirements
 - Linux
@@ -79,9 +93,10 @@ print(f"class average accuracy: {class_average_accuracy: .3f}")
 ```
 
 ## Advanced usage examples
-* Change default features and features processing
+* Change default features, features processing or add new features:
+We did our best to make our CellTypeGraph benchmark flexible and easy to extend, since we compute several 
+incommensurable features, we needed to a way to select, and process every feature independently. 
 * Load points samples
-* Add features
 * Manual download
 
 ## Reproducibility 
