@@ -1,5 +1,5 @@
 # CellTypeGraph Benchmark
-![Alt text](/home/lcerrone/PycharmProjects/celltype-graph-benchmark/resources/overview.svg)
+![](resources/overview.svg)
 
 CellTypeGraph is a new graph benchmark for node classification.
 
