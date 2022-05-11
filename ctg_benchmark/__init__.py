@@ -33,5 +33,5 @@ ctg_basic_loader_config = os.path.join(ctg_global_path, resources_dir, 'loader_b
 default_dataset_file_list = os.path.join(ctg_global_path, resources_dir, 'list_data.csv')
 
 urls = {'label_grs_surface': {'url': 'https://heibox.uni-heidelberg.de/f/23c79badbc9e46f59242/?dl=1',
-                              'md5sum': '7aa603f3d3cddbf766679d388076269b'}
+                              'md5sum': '51e21dc509a9205b9ec47f38a307b156'}
         }
